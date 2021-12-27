@@ -14,6 +14,7 @@ class Setting():
         self.VOL_MAX = 100
         
         self.fullscreen = False
+        self.resolution = [pygame.display.Info().current_w, pygame.display.Info().current_h]
         self.sound_volume = 100
         self.music_volume = 100
         
@@ -48,6 +49,7 @@ class Setting():
         
         with open("Settings.txt","w") as d:
             lines_to_write = ["fullscreen: "+str(self.fullscreen)+"\n",
+                              "resolution: "+str(self.resolution)+"\n",
                               "sound_vol: "+str(self.sound_volume)+"\n",
                               "music_vol: "+str(self.music_volume)+"\n",
                               "left: "+str(self.move_left)+"\n",
@@ -72,6 +74,11 @@ class Setting():
                             self.fullscreen = True
                         else:
                             self.fullscreen = False
+                    # Resolution
+                    if "resolution: " in line:
+                        value = line[len("fullscreen: "):-1]
+                        
+                        self.resolution = eval(value)
                     # Sound volume control
                     if "sound_vol: " in line:
                         value = int(line[len("sound_vol: "):-1])

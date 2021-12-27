@@ -28,7 +28,7 @@ MENUS = [objects.Menu("MAIN", settings_obj),
 game_display = pygame.Surface((GLOBAL.WIN_WIDTH,GLOBAL.WIN_HEIGHT))
 # Actual display
 display_info = pygame.display.Info()
-window_display = pygame.display.set_mode((display_info.current_w, display_info.current_w), pygame.RESIZABLE)
+window_display = pygame.display.set_mode((settings_obj.resolution[0], settings_obj.resolution[1]), pygame.RESIZABLE)
 
 pygame.display.set_caption("Journey Through Space")
 pygame.display.set_icon(gen_func.get_image("Assets","Icon.png", (0,0)))
