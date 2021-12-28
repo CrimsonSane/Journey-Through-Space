@@ -139,6 +139,7 @@ class Menu():
         self.but_press_time = 0
         self.config = False
         self.config_type = ""
+        self.config_index = 0
         
         self.menu_funcs = []
         self.scroll_type = "UP_DOWN"
@@ -171,15 +172,23 @@ class Menu():
         # SETTING menu
         self.setting_mnu = [["SOUND: "+str(self.settings_object.sound_volume),
                              "MUSIC: "+str(self.settings_object.music_volume),
+                             "FULLSCREEN: "+str(self.settings_object.fullscreen),
+                             "RESOLUTION: "+str(self.settings_object.resolution),
                              "BACK"],
                             [(self.WIDTH/2,50),
                              (self.WIDTH/2,120),
+                             (self.WIDTH/2,190),
+                             (self.WIDTH/2,260),
                              (self.WIDTH/2, self.HEIGHT - 50)],
                             [46,
+                             46,
+                             46,
                              46,
                              46],
                             ["CONFIGURE_SOUND",
                              "CONFIGURE_MUSIC",
+                             "CONFIGURE_FULLSCREEN",
+                             "CONFIGURE_RESOLUTION",
                              "MAIN_SCENE"]]
         # ERROR menu
         self.error_mnu = [["ERROR INVALID MENU NAME"],
@@ -207,6 +216,8 @@ class Menu():
     def update(self, key_butns):
         self.setting_mnu[0][0] = "SOUND: "+str(self.settings_object.sound_volume)
         self.setting_mnu[0][1] = "MUSIC: "+str(self.settings_object.music_volume)
+        self.setting_mnu[0][2] = "FULLSCREEN: "+str(self.settings_object.fullscreen)
+        self.setting_mnu[0][3] = "RESOLUTION: "+str(self.settings_object.resolution)
         
         BUTTON_TIME_COOLDOWN = 150
         
@@ -214,6 +225,10 @@ class Menu():
             if self.config:
                 if self.config_type == "SOUND" or self.config_type == "MUSIC":
                     self.configure_vol(key_butns, self.config_type)
+                if self.config_type == "FULLSCREEN":
+                    self.configure_fullscreen(key_butns)
+                if self.config_type == "RESOLUTION":
+                    self.configure_resolution(key_butns)
             else:
                 currnt_tme, targt_tme = gen_func.timer(self.but_press_time, BUTTON_TIME_COOLDOWN)
                 
@@ -243,6 +258,7 @@ class Menu():
                             self.config_type = ""
                         else:
                             self.config_type = "SOUND"
+                    # Music configuration
                     elif self.menu_funcs[3][self.but_index] == "CONFIGURE_MUSIC":
                         self.config = not self.config
                         if not self.config:
@@ -250,8 +266,62 @@ class Menu():
                             self.config_type = ""
                         else:
                             self.config_type = "MUSIC"
+                    # Fullscreen configuration
+                    elif self.menu_funcs[3][self.but_index] == "CONFIGURE_FULLSCREEN":
+                        self.config = not self.config
+                        if not self.config:
+                            self.settings_object.write_changes()
+                            self.config_type = ""
+                        else:
+                            self.config_type = "FULLSCREEN"
+                    # Resolution configuration
+                    elif self.menu_funcs[3][self.but_index] == "CONFIGURE_RESOLUTION":
+                        self.config = not self.config
+                        if not self.config:
+                            self.settings_object.write_changes()
+                            self.config_type = ""
+                        else:
+                            self.config_type = "RESOLUTION"
+                            
+                            self.config_index = gen_func.get_index_frm_2d_list(GLOBAL.RESOLUTIONS, self.settings_object.resolution)
                 else:
                     GLOBAL.scene_strng = self.menu_funcs[3][self.but_index]
+    
+    def configure_resolution(self, key_butns):
+        BUTTON_TIME_COOLDOWN = 150
+        currnt_tme, targt_tme = gen_func.timer(self.but_press_time, BUTTON_TIME_COOLDOWN)
+        
+        # Move left and right to configure sound volume
+        if currnt_tme > targt_tme:
+            if "LEFT" in key_butns:
+                self.but_press_time = pygame.time.get_ticks()
+                if self.config_index > 0:
+                    self.config_index -= 1
+                else:
+                    self.config_index = len(GLOBAL.RESOLUTIONS[0]) - 1
+                
+            if "RIGHT" in key_butns:
+                self.but_press_time = pygame.time.get_ticks()
+                if self.config_index < len(GLOBAL.RESOLUTIONS[0]) - 1:
+                    self.config_index += 1
+                else:
+                    self.config_index = 0
+            
+            self.settings_object.resolution = [GLOBAL.RESOLUTIONS[0][self.config_index],GLOBAL.RESOLUTIONS[1][self.config_index]]
+    
+    def configure_fullscreen(self, key_butns):
+        BUTTON_TIME_COOLDOWN = 150
+        currnt_tme, targt_tme = gen_func.timer(self.but_press_time, BUTTON_TIME_COOLDOWN)
+        
+        # Move left and right to configure fullscreen mode
+        if currnt_tme > targt_tme:
+            if "LEFT" in key_butns:
+                self.but_press_time = pygame.time.get_ticks()
+                self.settings_object.fullscreen = not self.settings_object.fullscreen
+                
+            if "RIGHT" in key_butns:
+                self.but_press_time = pygame.time.get_ticks()
+                self.settings_object.fullscreen = not self.settings_object.fullscreen
     
     def configure_vol(self, key_butns, vol_type):
         BUTTON_TIME_COOLDOWN = 150
@@ -266,7 +336,6 @@ class Menu():
             if "RIGHT" in key_butns:
                 self.but_press_time = pygame.time.get_ticks()
                 self.settings_object.inc_dec_volume(10, vol_type)
-            #print(self.settings_object.sound_volume)
     
     def draw(self, disply):
         for butn_index in range(len(self.menu_funcs[0])):

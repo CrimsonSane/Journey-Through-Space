@@ -1,5 +1,5 @@
 fullscreen: False
-resolution: [pygame.display.Info().current_w, pygame.display.Info().current_h]
+resolution: [1200, 900]
 sound_vol: 100
 music_vol: 100
 left: [97, 1073741904]

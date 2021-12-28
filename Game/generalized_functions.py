@@ -22,6 +22,7 @@ def timer(start_time, time):
     
     return current_time, target_time
 
+# Creates moving text that displays the zone number
 def create_zone_text():
     objects.Moving_text("ZONE:"+str(GLOBAL.zone_id), [GLOBAL.WIN_WIDTH/2,-10],
                         [0,GLOBAL.scroll_spd], GLOBAL.mving_txt_group)
@@ -76,6 +77,33 @@ def add_or_remove_astroids(amount, group):
     except:
         print("There are:", len(group), "Astroids")
 
+# Returns an integer after searching a list for a value
+def get_index_frm_2d_list(lst, elems):
+    # elems has to be a list of two values
+    possible_indexes = []
+    possible_indexes_wthout_repeat = []
+    index_counts = []
+    
+    # Create list of possible indexes
+    for r in range(len(lst)):
+        for c in range(len(lst[r])):
+            if lst[r][c] == elems[r]:
+                possible_indexes.append(c)
+    # Make a list without the repeated values
+    possible_indexes_wthout_repeat = list(set(possible_indexes))
+    
+    # get each values count
+    for index in possible_indexes_wthout_repeat:
+        index_counts.append(possible_indexes.count(index))
+    
+    # Return the value that has the highest count
+    for i in range(len(possible_indexes_wthout_repeat)):
+        if max(index_counts) == index_counts[i]:     
+            return possible_indexes_wthout_repeat[i]
+    # Value has not been found
+    return -1
+
+# Returns a bool on whether the text file exists
 def get_txt(name):
     try:
         with open(name + ".txt") as d:
@@ -84,6 +112,7 @@ def get_txt(name):
     except:
         return False
 
+# Creates items when certain conditions are met
 def create_items():
     ran_nums = [random.randint(1,4), random.randint(1,8)]
     ITEM_NAMES = ["HAMMER"]

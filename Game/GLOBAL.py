@@ -6,6 +6,11 @@ VERSION = "0.0.1"
 WIN_WIDTH = 1200
 WIN_HEIGHT = 900
 
+# Declare common resolutions
+# Top is width bottom is height
+RESOLUTIONS = [[720,720,1280,1200,1600,1920,1920,3840],
+               [480,576, 720, 900, 900,1080,1200,2160]]
+
 # Declare sprite groups
 player_group = pygame.sprite.Group()
 stars_group = pygame.sprite.Group()

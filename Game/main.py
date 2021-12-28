@@ -27,8 +27,7 @@ MENUS = [objects.Menu("MAIN", settings_obj),
 # Game display
 game_display = pygame.Surface((GLOBAL.WIN_WIDTH,GLOBAL.WIN_HEIGHT))
 # Actual display
-display_info = pygame.display.Info()
-window_display = pygame.display.set_mode((settings_obj.resolution[0], settings_obj.resolution[1]), pygame.RESIZABLE)
+window_display = pygame.display.set_mode((settings_obj.resolution[0], settings_obj.resolution[1]), pygame.RESIZABLE, 32)
 
 pygame.display.set_caption("Journey Through Space")
 pygame.display.set_icon(gen_func.get_image("Assets","Icon.png", (0,0)))
@@ -72,6 +71,7 @@ def main():
         1080 / 900 = 1.2
         
         """
+        
         set_window_display()
         
         if GLOBAL.scene_strng == "MAIN_SCENE":
@@ -99,6 +99,16 @@ def main():
     pygame.quit()
 
 def set_window_display():
+    
+    global window_display
+    
+    #print(window_display.get_flags(), pygame.FULLSCREEN)
+    
+    if settings_obj.fullscreen:
+        window_display = pygame.display.set_mode((pygame.display.Info().current_w, pygame.display.Info().current_h), pygame.FULLSCREEN, 32)
+    else:
+        window_display = pygame.display.set_mode((window_display.get_width(), window_display.get_height()), pygame.RESIZABLE, 32)
+    
     scale = (window_display.get_width() / GLOBAL.WIN_WIDTH, window_display.get_height() / GLOBAL.WIN_HEIGHT)
     if scale[0] > scale[1]:
         scaled_game_display = pygame.transform.scale(game_display, (int(GLOBAL.WIN_WIDTH * scale[1]),
