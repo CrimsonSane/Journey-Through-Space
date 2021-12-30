@@ -102,8 +102,6 @@ def set_window_display():
     
     global window_display
     
-    #print(window_display.get_flags(), pygame.FULLSCREEN)
-    
     if settings_obj.fullscreen:
         window_display = pygame.display.set_mode((pygame.display.Info().current_w, pygame.display.Info().current_h), pygame.FULLSCREEN, 32)
     else:
