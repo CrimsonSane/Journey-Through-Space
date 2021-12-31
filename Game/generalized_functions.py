@@ -4,7 +4,7 @@ import GLOBAL
 
 # Returns a surface object which is the image
 def get_image(folder, img_nme, scle):
-    img = pygame.image.load(os.path.join(folder, img_nme))
+    img = pygame.image.load(os.path.join(folder, img_nme)).convert_alpha()
     # Determine if scale needs to be changed
     if scle == (0,0):
         return img
@@ -128,7 +128,7 @@ def get_txt(name):
 def create_items():
     ran_nums = [random.randint(1,4), random.randint(1,8)]
     ITEM_NAMES = ["HAMMER"]
-    SPAWN_INTERVAL = 1000
+    SPAWN_INTERVAL = 1500
     
     #print(round(GLOBAL.current_tick/SPAWN_INTERVAL,2), round(GLOBAL.current_tick/SPAWN_INTERVAL,2).is_integer())
     if round(GLOBAL.current_tick/SPAWN_INTERVAL,2).is_integer():

@@ -18,6 +18,8 @@ FPS = 60
 pygame.font.init()
 pygame.init()
 
+pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN, pygame.KEYUP])
+
 # Setup the settings from Settings.txt
 settings_obj = objects.Setting()
 settings_obj.setup_settings()
@@ -31,7 +33,8 @@ MENUS = [objects.Menu("MAIN", settings_obj),
 # Game display
 game_display = pygame.Surface((GLOBAL.WIN_WIDTH,GLOBAL.WIN_HEIGHT))
 # Actual display
-window_display = pygame.display.set_mode((settings_obj.resolution[0], settings_obj.resolution[1]), pygame.RESIZABLE, 32)
+window_display = pygame.display.set_mode((settings_obj.resolution[0], settings_obj.resolution[1]),
+                                         pygame.RESIZABLE | pygame.DOUBLEBUF, 16)
 
 pygame.display.set_caption("Journey Through Space")
 pygame.display.set_icon(gen_func.get_image("Assets","Icon.png", (0,0)))
@@ -111,9 +114,11 @@ def set_window_display():
     global window_display
     
     if settings_obj.fullscreen:
-        window_display = pygame.display.set_mode((pygame.display.Info().current_w, pygame.display.Info().current_h), pygame.FULLSCREEN, 32)
+        window_display = pygame.display.set_mode((pygame.display.Info().current_w, pygame.display.Info().current_h),
+                                                 pygame.FULLSCREEN | pygame.DOUBLEBUF, 16)
     else:
-        window_display = pygame.display.set_mode((window_display.get_width(), window_display.get_height()), pygame.RESIZABLE, 32)
+        window_display = pygame.display.set_mode((window_display.get_width(), window_display.get_height()),
+                                                 pygame.RESIZABLE | pygame.DOUBLEBUF, 16)
     
     scale = (window_display.get_width() / GLOBAL.WIN_WIDTH, window_display.get_height() / GLOBAL.WIN_HEIGHT)
     if scale[0] > scale[1]:

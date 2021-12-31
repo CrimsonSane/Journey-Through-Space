@@ -677,7 +677,9 @@ class Star(pygame.sprite.Sprite):
         self.spd[1] = GLOBAL.scroll_spd * random.randint(self.spd_rng[2],self.spd_rng[3])
     
     def draw(self, disply):
-        disply.blit(self.image, self.rect)
+        # Only display if on screen
+        if self.pos[1] > 0:
+            disply.blit(self.image, self.rect)
 
 # ASTROID CLASS
 class Astroid(pygame.sprite.Sprite):
@@ -788,7 +790,9 @@ class Astroid(pygame.sprite.Sprite):
             self.regen()
     
     def draw(self, disply):
-        disply.blit(self.image, self.rect)
+        # Only display if on screen
+        if self.pos[1] > -10:
+            disply.blit(self.image, self.rect)
 
 # EXPLOSION CLASS
 class Explosion(pygame.sprite.Sprite):
@@ -924,4 +928,6 @@ class Item(pygame.sprite.Sprite):
             print("There are no more objects to collide with")
     
     def draw(self, disply):
-        disply.blit(self.image, self.rect)
+        # Only display if on screen
+        if self.pos[1] > -10:
+            disply.blit(self.image, self.rect)
