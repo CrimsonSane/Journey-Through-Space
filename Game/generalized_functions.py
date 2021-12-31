@@ -103,6 +103,18 @@ def get_index_frm_2d_list(lst, elems):
     # Value has not been found
     return -1
 
+# Plays sound on specified mixer
+def play_sound(sound, mixer):
+    pygame.mixer.Channel(mixer).play(sound)
+
+# Plays music and returns currently playing song
+def play_music(music, current_music):
+    if not pygame.mixer.music.get_busy() or current_music != music:
+        pygame.mixer.music.load(music)
+        pygame.mixer.music.play()
+    
+    return music
+
 # Returns a bool on whether the text file exists
 def get_txt(name):
     try:

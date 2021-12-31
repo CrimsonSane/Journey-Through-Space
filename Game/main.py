@@ -4,6 +4,10 @@
 
 import os, pygame
 
+# Initialize mixer before everything else
+pygame.mixer.pre_init(44100, 32, 1, 512)
+pygame.mixer.init()
+
 # Outside py scripts that handle other things
 import objects
 import GLOBAL
@@ -50,6 +54,8 @@ def main():
     game_objs_list = [GLOBAL.stars_group, player, GLOBAL.lazer_group, GLOBAL.astroids_group, GLOBAL.explosion_group,
                       GLOBAL.item_group, GLOBAL.mving_txt_group]
     
+    current_music = GLOBAL.MUSIC_TRACKS[0]
+    
     running = True
     
     while running:
@@ -76,6 +82,7 @@ def main():
         
         if GLOBAL.scene_strng == "MAIN_SCENE":
             # Run main_scene
+            current_music = gen_func.play_music(GLOBAL.MUSIC_TRACKS[0], current_music)
             main_scene(player_keys, menu_objs_list, debug)
         elif GLOBAL.scene_strng == "SETTING_SCENE":
             # Run settings_scene
@@ -88,6 +95,7 @@ def main():
             reload_scene(player)
         elif GLOBAL.scene_strng == "GAME_SCENE":
             # Run game_scene
+            current_music = gen_func.play_music(GLOBAL.MUSIC_TRACKS[1], current_music)
             game_scene(player_keys, game_objs_list, debug)
         elif GLOBAL.scene_strng == "GAME_OVER_SCENE":
             # Run game_over_scene
@@ -213,6 +221,17 @@ def game_over_scene(user_inpt, obj_lst, debug):
     game_display.blit(score_txt, score_txt.get_rect(center = (int(GLOBAL.WIN_WIDTH/2),36)))
     draw_debug_screen(debug, plyer, game_display)
 
+def update_sound_vols():
+    GLOBAL.lazer_shooting.set_volume(settings_obj.sound_volume/100)
+    GLOBAL.lazer_hit.set_volume(settings_obj.sound_volume/100)
+    GLOBAL.astroid_explosion.set_volume(settings_obj.sound_volume/100)
+    GLOBAL.menu_selection.set_volume(settings_obj.sound_volume/100)
+    GLOBAL.menu_select.set_volume(settings_obj.sound_volume/100)
+    GLOBAL.item_collect.set_volume(settings_obj.sound_volume/100)
+    GLOBAL.player_hit.set_volume(settings_obj.sound_volume/100)
+    
+    pygame.mixer.music.set_volume(settings_obj.music_volume/100)
+
 def settings_scene(user_inpt, obj_lst):
     pygame.display.update()
     GLOBAL.clock.tick(FPS)
@@ -220,6 +239,8 @@ def settings_scene(user_inpt, obj_lst):
     # Process user input:
     update_objects(obj_lst, user_inpt)
     MENUS[1].update(user_inpt)
+    
+    update_sound_vols()
     
     # Output objects:
     draw_objects(obj_lst, game_display)

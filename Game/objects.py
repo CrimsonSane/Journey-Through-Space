@@ -236,12 +236,14 @@ class Menu():
                 if currnt_tme > targt_tme:
                     if "DOWN" in key_butns:
                         self.but_press_time = pygame.time.get_ticks()
+                        GLOBAL.menu_selection.play()
                         if self.but_index < len(self.menu_funcs[0]) - 1:
                             self.but_index += 1
                         else:
                             self.but_index = 0
                     if "UP" in key_butns:
                         self.but_press_time = pygame.time.get_ticks()
+                        GLOBAL.menu_selection.play()
                         if self.but_index > 0:
                             self.but_index -= 1
                         else:
@@ -249,6 +251,7 @@ class Menu():
                     #print(self.but_index)
             
             if "ENTER" in key_butns:
+                GLOBAL.menu_select.play()
                 if "CONFIGURE_" in self.menu_funcs[3][self.but_index]:
                     # Sound configuration
                     if self.menu_funcs[3][self.but_index] == "CONFIGURE_SOUND":
@@ -295,6 +298,7 @@ class Menu():
         if currnt_tme > targt_tme:
             if "LEFT" in key_butns:
                 self.but_press_time = pygame.time.get_ticks()
+                GLOBAL.menu_selection.play()
                 if self.config_index > 0:
                     self.config_index -= 1
                 else:
@@ -302,6 +306,7 @@ class Menu():
                 
             if "RIGHT" in key_butns:
                 self.but_press_time = pygame.time.get_ticks()
+                GLOBAL.menu_selection.play()
                 if self.config_index < len(GLOBAL.RESOLUTIONS[0]) - 1:
                     self.config_index += 1
                 else:
@@ -317,10 +322,12 @@ class Menu():
         if currnt_tme > targt_tme:
             if "LEFT" in key_butns:
                 self.but_press_time = pygame.time.get_ticks()
+                GLOBAL.menu_selection.play()
                 self.settings_object.fullscreen = not self.settings_object.fullscreen
                 
             if "RIGHT" in key_butns:
                 self.but_press_time = pygame.time.get_ticks()
+                GLOBAL.menu_selection.play()
                 self.settings_object.fullscreen = not self.settings_object.fullscreen
     
     def configure_vol(self, key_butns, vol_type):
@@ -331,10 +338,12 @@ class Menu():
         if currnt_tme > targt_tme:
             if "LEFT" in key_butns:
                 self.but_press_time = pygame.time.get_ticks()
+                GLOBAL.menu_selection.play()
                 self.settings_object.inc_dec_volume(-10, vol_type)
                 
             if "RIGHT" in key_butns:
                 self.but_press_time = pygame.time.get_ticks()
+                GLOBAL.menu_selection.play()
                 self.settings_object.inc_dec_volume(10, vol_type)
     
     def draw(self, disply):
@@ -419,7 +428,6 @@ class Player_space_ship(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = (self.pos[0],self.pos[1]))
         self.shield_rect = self.bubble_img.get_rect(center = (self.pos[0],self.pos[1]))
         
-        
         if self.fire_index < len(self.thruster_imgs) - 1:
             self.fire_index += 1
         else:
@@ -497,6 +505,7 @@ class Player_space_ship(pygame.sprite.Sprite):
             GLOBAL.astroids_group.sprites()[astroid_collision_value].split()
             if self.latest_health == self.health and not self.shield_bool:
                 self.health -= 1
+                gen_func.play_sound(GLOBAL.player_hit, GLOBAL.PLAYER_CHANNEL)
                 #print(self.health)
     
     def shield(self, start_time, on_time):
@@ -522,6 +531,7 @@ class Player_space_ship(pygame.sprite.Sprite):
                 Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-6, angle=self.angle,
                       group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
                 self.lazer_cooldown = self.LAZER_COOLDOWNS[0]
+                gen_func.play_sound(GLOBAL.lazer_shooting, GLOBAL.LAZER_CHANNEL)
     
     def check_collision(self, group):
         collide_lst_index = self.rect.collidelist(group.sprites())
@@ -573,12 +583,14 @@ class Lazer(pygame.sprite.Sprite):
             # Trys to split objects if in screen
             if self.pos[1] < 0:
                 GLOBAL.astroids_group.sprites()[astroid_collision_value].regen()
+                gen_func.play_sound(GLOBAL.lazer_hit, GLOBAL.LAZER_HIT_CHANNEL)
                 self.kill()
             else:
                 GLOBAL.score += GLOBAL.ASTROID_SCORE_AMTS[GLOBAL.astroids_group.sprites()[astroid_collision_value].pts]
                 Moving_text(str(GLOBAL.ASTROID_SCORE_AMTS[GLOBAL.astroids_group.sprites()[astroid_collision_value].pts]),
                             self.pos, [0,-self.spd], GLOBAL.mving_txt_group)
                 GLOBAL.astroids_group.sprites()[astroid_collision_value].split()
+                gen_func.play_sound(GLOBAL.lazer_hit, GLOBAL.LAZER_HIT_CHANNEL)
                 self.kill()
         
         # If object moves out of screen
@@ -710,6 +722,7 @@ class Astroid(pygame.sprite.Sprite):
             else:
                 self.split()
                 GLOBAL.astroids_group.sprites()[astroid_collision_value].split()
+                gen_func.play_sound(GLOBAL.astroid_explosion, GLOBAL.EXPLOSION_CHANNEL)
         
         # If object moves out of screen
         if self.pos[1] > self.HEIGHT + 100 or self.pos[0] > self.WIDTH or self.pos[0] < 0:
@@ -874,6 +887,7 @@ class Item(pygame.sprite.Sprite):
             plyer = GLOBAL.player_group.sprites()[player_collide_lst_index]
             
             if self.item_name == "HAMMER":
+                gen_func.play_sound(GLOBAL.item_collect, GLOBAL.PLAYER_CHANNEL)
                 if plyer.health < plyer.MAX_HEALTH:
                     plyer.health += 1
                     self.kill()
