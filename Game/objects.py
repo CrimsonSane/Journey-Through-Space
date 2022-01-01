@@ -14,7 +14,7 @@ class Setting():
         self.VOL_MAX = 100
         
         self.fullscreen = False
-        self.resolution = [pygame.display.Info().current_w, pygame.display.Info().current_h]
+        self.resolution = [1200, 900]
         self.sound_volume = 100
         self.music_volume = 100
         
@@ -27,26 +27,31 @@ class Setting():
     
     def inc_dec_volume(self, value, vol_type):
         if vol_type == "SOUND":
+            # If future sound volume is over maximum volume
             if (value + self.sound_volume) >= self.VOL_MAX:
                 self.sound_volume = self.VOL_MAX
+            # If future sound volume is under minimum volume
             elif (value + self.sound_volume) <= self.VOL_MIN:
                 self.sound_volume = self.VOL_MIN
             else:
+                # Change volume as normal
                 self.sound_volume += value
             
         elif vol_type == "MUSIC":
+            # If future sound volume is over maximum volume
             if (value + self.music_volume) >= self.VOL_MAX:
                 self.music_volume = self.VOL_MAX
+            # If future sound volume is under minimum volume
             elif (value + self.music_volume) <= self.VOL_MIN:
                 self.music_volume = self.VOL_MIN
             else:
+                # Change volume as normal
                 self.music_volume += value
             
         else:
             print("Unknown volume type: "+str(vol_type))
     
     def write_changes(self):
-        
         with open("Settings.txt","w") as d:
             lines_to_write = ["fullscreen: "+str(self.fullscreen)+"\n",
                               "resolution: "+str(self.resolution)+"\n",
@@ -66,6 +71,7 @@ class Setting():
         if exists:
             with open("Settings.txt","r") as d:
                 lines = d.readlines()
+                
                 for line in lines:
                     # Fullscreen setting
                     if "fullscreen: " in line:
@@ -124,7 +130,8 @@ class Setting():
                         self.shoot = eval(value)
                 d.close()
         else:
-            print("Settings.txt doesn't exist. Game will run on default values.")
+            print("Settings.txt doesn't exist. We'll create one for you. :)")
+            self.write_changes()
 
 # MENU CLASS
 class Menu():
@@ -214,10 +221,11 @@ class Menu():
             self.menu_funcs = self.error_mnu
     
     def update(self, key_butns):
-        self.setting_mnu[0][0] = "SOUND: "+str(self.settings_object.sound_volume)
-        self.setting_mnu[0][1] = "MUSIC: "+str(self.settings_object.music_volume)
-        self.setting_mnu[0][2] = "FULLSCREEN: "+str(self.settings_object.fullscreen)
-        self.setting_mnu[0][3] = "RESOLUTION: "+str(self.settings_object.resolution)
+        if self.menu_name == "SETTINGS":
+            self.setting_mnu[0][0] = "SOUND: "+str(self.settings_object.sound_volume)
+            self.setting_mnu[0][1] = "MUSIC: "+str(self.settings_object.music_volume)
+            self.setting_mnu[0][2] = "FULLSCREEN: "+str(self.settings_object.fullscreen)
+            self.setting_mnu[0][3] = "RESOLUTION: "+str(self.settings_object.resolution)
         
         BUTTON_TIME_COOLDOWN = 150
         
@@ -250,8 +258,11 @@ class Menu():
                             self.but_index = len(self.menu_funcs[0]) - 1
                     #print(self.but_index)
             
+            # If the enter button was pressed
             if "ENTER" in key_butns:
                 GLOBAL.menu_select.play()
+                
+                # If the button pressed has configure in the event string
                 if "CONFIGURE_" in self.menu_funcs[3][self.but_index]:
                     # Sound configuration
                     if self.menu_funcs[3][self.but_index] == "CONFIGURE_SOUND":
@@ -352,6 +363,8 @@ class Menu():
             if butn_index == self.but_index:
                 # Simulate a blink when selected
                 if butn_index == self.latest_index:
+                    # When config is true make button look like:
+                    #  <BUTTON>
                     if self.config:
                         font_size = self.menu_funcs[2][butn_index]
                         text = "<"+self.menu_funcs[0][butn_index]+">"
@@ -359,14 +372,18 @@ class Menu():
                         
                         disply.blit(rendered_text, rendered_text.get_rect(center = self.menu_funcs[1][butn_index]))
                     else:
+                    # When config is false make button look like:
+                    #  >BUTTON<
                         font_size = self.menu_funcs[2][butn_index]
                         text = ">"+self.menu_funcs[0][butn_index]+"<"
                         rendered_text = gen_func.get_font(font_size).render(text, 1, (255,255,255))
                         
                         disply.blit(rendered_text, rendered_text.get_rect(center = self.menu_funcs[1][butn_index]))
                 else:
+                    # Set latest index
                     self.latest_index = self.but_index
             else:
+                # The button has not been selected
                 font_size = self.menu_funcs[2][butn_index]
                 text = self.menu_funcs[0][butn_index]
                 rendered_text = gen_func.get_font(font_size).render(text, 1, (255,255,255))
@@ -428,6 +445,7 @@ class Player_space_ship(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = (self.pos[0],self.pos[1]))
         self.shield_rect = self.bubble_img.get_rect(center = (self.pos[0],self.pos[1]))
         
+        # Loop through the thruster images
         if self.fire_index < len(self.thruster_imgs) - 1:
             self.fire_index += 1
         else:
@@ -448,6 +466,7 @@ class Player_space_ship(pygame.sprite.Sprite):
         elif self.health <= 0 and self.display_player == True:
             Explosion([0,0], GLOBAL.explosion_group, [3,3, 5,5], self.pos)
             self.display_player = False
+        # Reset player position after death
         if self.health == 0:
             self.pos = [int(GLOBAL.WIN_WIDTH/2),GLOBAL.WIN_HEIGHT -100]
         
@@ -460,6 +479,7 @@ class Player_space_ship(pygame.sprite.Sprite):
         
         # if player isn't dead
         if self.health > 0:
+            # Shoot weapon
             if "SHOOT" in key_butns:
                 self.shoot()
             
@@ -500,29 +520,41 @@ class Player_space_ship(pygame.sprite.Sprite):
         
         # Astroid collision
         astroid_collision_value = self.check_collision(GLOBAL.astroids_group)
-        if astroid_collision_value != -1 and self.health > 0:
+        if astroid_collision_value != -1:
             # Trys to split both objects and damages the player
             GLOBAL.astroids_group.sprites()[astroid_collision_value].split()
-            if self.latest_health == self.health and not self.shield_bool:
-                self.health -= 1
-                gen_func.play_sound(GLOBAL.player_hit, GLOBAL.PLAYER_CHANNEL)
-                #print(self.health)
+            # If the latest health is equal to current health
+            if self.latest_health == self.health:
+                
+                # If the player is not protected
+                if not self.shield_bool:
+                    self.health -= 1
+                    gen_func.play_sound(GLOBAL.player_hit, GLOBAL.PLAYER_CHANNEL)
+                else:
+                    # It plays a lazer sound if the astroid hits while the player has a shield
+                    gen_func.play_sound(GLOBAL.lazer_hit, GLOBAL.LAZER_CHANNEL)
     
     def shield(self, start_time, on_time):
         current_time, target_time = gen_func.timer(start_time, on_time)
         BLINK_TIME = target_time - 1000
         
+        # The shield is done 
         if current_time >= target_time:
             self.shield_bool = False
             self.display_shield = False
+        
+        # The shield is being displayed
         elif current_time < BLINK_TIME:
             self.display_shield = True
+            
+        # The shield is about to go out
         elif current_time >= BLINK_TIME and current_time < target_time:
             for i in range(10):
                 if current_time >= BLINK_TIME + 100*i:
                     self.display_shield = not self.display_shield
     
     def shoot(self):
+        # Normal player lazer
         if self.lazer_type == "PLAYER_NORM_LAZER":
             
             if self.lazer_cooldown <= 0:
@@ -536,13 +568,15 @@ class Player_space_ship(pygame.sprite.Sprite):
     def check_collision(self, group):
         collide_lst_index = self.rect.collidelist(group.sprites())
         
-        if collide_lst_index > 0:
+        # The try method is to help prevent crashes
+        try:
             # Makes sure not to return itself
             if self.rect != group.sprites()[collide_lst_index].rect:
                 return collide_lst_index
             else:
                 return -1
-        return -1
+        except:
+            print("There are no objects to collide with")
     
     def draw(self, disply):
         if self.display_player:
@@ -586,9 +620,11 @@ class Lazer(pygame.sprite.Sprite):
                 gen_func.play_sound(GLOBAL.lazer_hit, GLOBAL.LAZER_HIT_CHANNEL)
                 self.kill()
             else:
+                # Add and display points
                 GLOBAL.score += GLOBAL.ASTROID_SCORE_AMTS[GLOBAL.astroids_group.sprites()[astroid_collision_value].pts]
                 Moving_text(str(GLOBAL.ASTROID_SCORE_AMTS[GLOBAL.astroids_group.sprites()[astroid_collision_value].pts]),
                             self.pos, [0,-self.spd], GLOBAL.mving_txt_group)
+                
                 GLOBAL.astroids_group.sprites()[astroid_collision_value].split()
                 gen_func.play_sound(GLOBAL.lazer_hit, GLOBAL.LAZER_HIT_CHANNEL)
                 self.kill()
@@ -602,11 +638,15 @@ class Lazer(pygame.sprite.Sprite):
     def check_collision(self, group):
         collide_lst_index = self.rect.collidelist(group.sprites())
         
-        # Makes sure not to return itself
-        if self.rect != group.sprites()[collide_lst_index].rect:
-            return collide_lst_index
-        else:
-            return -1
+        # The try method is to help prevent crashes
+        try:
+            # Makes sure not to return itself
+            if self.rect != group.sprites()[collide_lst_index].rect:
+                return collide_lst_index
+            else:
+                return -1
+        except:
+            print("There are no objects to collide with")
     
     def draw(self, disply):
         disply.blit(self.image, self.rect)
@@ -735,11 +775,15 @@ class Astroid(pygame.sprite.Sprite):
     def check_collision(self, group):
         collide_lst_index = self.rect.collidelist(group.sprites())
         
-        # Makes sure not to return itself
-        if self.rect != group.sprites()[collide_lst_index].rect:
-            return collide_lst_index
-        else:
-            return -1
+        # The try method is to help prevent crashes
+        try:
+            # Makes sure not to return itself
+            if self.rect != group.sprites()[collide_lst_index].rect:
+                return collide_lst_index
+            else:
+                return -1
+        except:
+            print("There are no objects to collide with")
     
     def regen(self):
         if self.is_astroid:
@@ -757,6 +801,7 @@ class Astroid(pygame.sprite.Sprite):
             self.image = random.choice(self.images[self.pts - 1])
             self.orignial_img = self.image
         else:
+            # Make an explosion if it is on the window
             if self.pos[1] > -10 and self.pos[1] < self.HEIGHT + 100:
                 Explosion(self.spd, GLOBAL.explosion_group, [1,1, 1,1], self.pos)
             self.kill()
@@ -825,7 +870,7 @@ class Explosion(pygame.sprite.Sprite):
                         gen_func.get_image("Assets","Explosion-frame-12.png",(size[2]*126,size[3]*126)),
                         gen_func.get_image("Assets","Explosion-frame-12.png",(size[2]*136,size[3]*136))]
         self.image = self.images[0]
-        self.orignial_imgs = self.images # Save image for later
+        self.orignial_imgs = self.images # Save images for later
         self.rect = self.image.get_rect(center = (self.pos[0],self.pos[1]))
         
         self.start_time = pygame.time.get_ticks()
@@ -881,6 +926,7 @@ class Item(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(self.og_image, self.angle)
         self.rect = self.image.get_rect(center = (self.pos[0], self.pos[1]))
         
+        # If it is outside of the screen
         if self.pos[1] < -GLOBAL.WIN_HEIGHT or self.pos[1] > GLOBAL.WIN_HEIGHT:
             self.kill()
         
@@ -890,6 +936,7 @@ class Item(pygame.sprite.Sprite):
             BONUS_SCORE = 1000
             plyer = GLOBAL.player_group.sprites()[player_collide_lst_index]
             
+            # Hammer increases health to one and gives bonus points if max health is reached
             if self.item_name == "HAMMER":
                 gen_func.play_sound(GLOBAL.item_collect, GLOBAL.PLAYER_CHANNEL)
                 if plyer.health < plyer.MAX_HEALTH:
@@ -918,14 +965,15 @@ class Item(pygame.sprite.Sprite):
     def check_collision(self, group):
         collide_lst_index = self.rect.collidelist(group.sprites())
         
-        # Makes sure not to return itself
+        # The try method is to help prevent crashes
         try:
+            # Makes sure not to return itself
             if self.rect != group.sprites()[collide_lst_index].rect:
                 return collide_lst_index
             else:
                 return -1
         except:
-            print("There are no more objects to collide with")
+            print("There are no objects to collide with")
     
     def draw(self, disply):
         # Only display if on screen

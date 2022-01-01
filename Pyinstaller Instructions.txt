@@ -1,0 +1,4 @@
+This would depend on where pyinstaller is installed on your computer in order to
+run the command on a command prompt
+
+in a command prompt or terminal type: pyinstaller Game/main.py "Journey Through Space.spec"

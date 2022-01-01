@@ -36,27 +36,29 @@ game_display = pygame.Surface((GLOBAL.WIN_WIDTH,GLOBAL.WIN_HEIGHT))
 window_display = pygame.display.set_mode((settings_obj.resolution[0], settings_obj.resolution[1]),
                                          pygame.RESIZABLE | pygame.DOUBLEBUF, 16)
 
+# Set window icon and caption name
 pygame.display.set_caption("Journey Through Space")
 pygame.display.set_icon(gen_func.get_image("Assets","Icon.png", (0,0)))
 
 def main():
     
+    # Activate debug mode if file exists
     debug = gen_func.get_txt("DEBUG_MODE")
     
-    MENUS[1].settings_object = settings_obj
-    
-    # Create objects
+    # Create the stars
     gen_func.create_stars(100, GLOBAL.stars_group)
     
-    # Declare our player
+    # Create the player ship
     player = objects.Player_space_ship([int(GLOBAL.WIN_WIDTH/2),GLOBAL.WIN_HEIGHT -100],
                                        gen_func.get_image("Assets","SpaceShip.png", (0,0)))
     
+    # Lists containing objects to update and draw
     menu_objs_list = [GLOBAL.stars_group]
     
     game_objs_list = [GLOBAL.stars_group, player, GLOBAL.lazer_group, GLOBAL.astroids_group, GLOBAL.explosion_group,
                       GLOBAL.item_group, GLOBAL.mving_txt_group]
     
+    # Initalize current music as the title song
     current_music = GLOBAL.MUSIC_TRACKS[0]
     
     running = True
@@ -72,15 +74,6 @@ def main():
         if player_keys == "QUIT" or GLOBAL.scene_strng == "QUIT":
             running = False
         
-        """
-        HD display resolution: 1920, 1080
-        Game resolution: 1200, 900
-        
-        1920 / 1200 = 1.6
-        1080 / 900 = 1.2
-        
-        """
-        
         set_window_display()
         
         if GLOBAL.scene_strng == "MAIN_SCENE":
@@ -89,9 +82,11 @@ def main():
             main_scene(player_keys, menu_objs_list, debug)
         elif GLOBAL.scene_strng == "SETTING_SCENE":
             # Run settings_scene
+            current_music = gen_func.play_music(GLOBAL.MUSIC_TRACKS[0], current_music)
             settings_scene(player_keys, menu_objs_list)
         elif "CONFIGURE_" in GLOBAL.scene_strng:
             # Run configuration_scene
+            current_music = gen_func.play_music(GLOBAL.MUSIC_TRACKS[0], current_music)
             configuration_scene(player_keys, menu_objs_list)
         elif GLOBAL.scene_strng == "RELOAD_GAME":
             # Reload and reopen game_scene
@@ -109,6 +104,38 @@ def main():
     # After leaving the loop lets close the window down
     pygame.quit()
 
+def get_scaled_display(current_disply):
+    """
+    HD display resolution: 1920, 1080
+    Game resolution: 1200, 900
+    
+    1920 / 1200 = 1.6
+    1080 / 900 = 1.2
+     
+    """
+    # Scale of the current display to game display
+    win_scale = (current_disply.get_width() / GLOBAL.WIN_WIDTH,
+                 current_disply.get_height() / GLOBAL.WIN_HEIGHT)
+    
+    # If width scale is greater than height scale
+    if win_scale[0] > win_scale[1]:
+        working_scale = win_scale[1]
+        scaled_game_display = pygame.transform.scale(game_display, (int(GLOBAL.WIN_WIDTH * working_scale),
+                                                                    int(GLOBAL.WIN_HEIGHT * working_scale)))
+        #(1920 - (1200 * working_scale))/2 = to the halfway point of the screen
+        
+        win_pos = (window_display.get_width() - int(GLOBAL.WIN_WIDTH * working_scale))/2
+        return scaled_game_display, (win_pos,0)
+        #window_display.blit(scaled_game_display, (win_pos,0))
+    else:
+        working_scale = win_scale[0]
+        scaled_game_display = pygame.transform.scale(game_display, (int(GLOBAL.WIN_WIDTH * working_scale),
+                                                                    int(GLOBAL.WIN_HEIGHT * working_scale)))
+        #(1920 - (1200 * working_scale))/2 = to the halfway point of the screen
+        
+        win_pos = (window_display.get_width() - int(GLOBAL.WIN_WIDTH * working_scale))/2
+        return scaled_game_display, (win_pos,0)
+
 def set_window_display():
     
     global window_display
@@ -120,25 +147,8 @@ def set_window_display():
         window_display = pygame.display.set_mode((window_display.get_width(), window_display.get_height()),
                                                  pygame.RESIZABLE | pygame.DOUBLEBUF, 16)
     
-    scale = (window_display.get_width() / GLOBAL.WIN_WIDTH, window_display.get_height() / GLOBAL.WIN_HEIGHT)
-    if scale[0] > scale[1]:
-        scaled_game_display = pygame.transform.scale(game_display, (int(GLOBAL.WIN_WIDTH * scale[1]),
-                                                                    int(GLOBAL.WIN_HEIGHT * scale[1])))
-        """
-        (1920 - (1200 * scale))/2 = to the halfway point of the screen
-        
-        """
-        win_pos = (window_display.get_width() - int(GLOBAL.WIN_WIDTH * scale[1]))/2
-        window_display.blit(scaled_game_display, (win_pos,0))
-    else:
-        scaled_game_display = pygame.transform.scale(game_display, (int(GLOBAL.WIN_WIDTH * scale[0]),
-                                                                    int(GLOBAL.WIN_HEIGHT * scale[0])))
-        """
-        (1920 - (1200 * scale))/2 = to the halfway point of the screen
-        
-        """
-        win_pos = (window_display.get_width() - int(GLOBAL.WIN_WIDTH * scale[0]))/2
-        window_display.blit(scaled_game_display, (win_pos,0))
+    scaled_display = get_scaled_display(window_display)
+    window_display.blit(scaled_display[0],scaled_display[1])
 
 def unknown_scene(user_inpt):
     
