@@ -1,4 +1,5 @@
-/Title_screenshot.png
+![](/Title_screenshot.PNG)
+
 
 # About:
 Journey Through Space is a top-down arcade shooter made in pygame.
