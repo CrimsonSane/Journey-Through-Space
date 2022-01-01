@@ -4,7 +4,7 @@
 block_cipher = None
 
 
-a = Analysis(['Game\\main.py'],
+a = Analysis(['Game/main.py'],
              pathex=[],
              binaries=[],
              datas=[('Game/Assets/*', 'Assets/')],
@@ -33,7 +33,7 @@ exe = EXE(pyz,
           disable_windowed_traceback=False,
           target_arch=None,
           codesign_identity=None,
-          entitlements_file=None , icon='Game\\Icon.ico')
+          entitlements_file=None , icon='Game/Icon.ico')
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,

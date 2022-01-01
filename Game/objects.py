@@ -14,6 +14,7 @@ class Setting():
         self.VOL_MAX = 100
         
         self.fullscreen = False
+        self.latest_fulscrn = self.fullscreen
         self.resolution = [1200, 900]
         self.sound_volume = 100
         self.music_volume = 100
@@ -692,15 +693,12 @@ class Star(pygame.sprite.Sprite):
         self.images = imgs
         self.image = random.choice(self.images)
         self.orignial_img = self.image # Save image for later
+        self.image = pygame.transform.rotate(self.orignial_img, self.angle)
         self.rect = self.image.get_rect(center = (self.pos[0],self.pos[1]))
     
     def update(self):
         # Move with given speed
         self.pos = [self.pos[0]+self.spd[0], self.pos[1]+self.spd[1]]
-        
-        # Rotate
-        self.image = pygame.transform.rotate(self.orignial_img, self.angle)
-        self.angle += 2
         
         # If object moves out of screen
         if self.pos[1] > self.HEIGHT or self.pos[0] > self.WIDTH or self.pos[0] < 0:
@@ -712,6 +710,7 @@ class Star(pygame.sprite.Sprite):
         self.pos = [random.randint(0,self.WIDTH),random.randint(-self.HEIGHT,0)] # Randomize position
         self.image = random.choice(self.images)
         self.orignial_img = self.image
+        self.image = pygame.transform.rotate(self.orignial_img, self.angle)
         
         self.spd[0] = GLOBAL.scroll_spd * random.randint(self.spd_rng[0],self.spd_rng[1])
         self.spd[1] = GLOBAL.scroll_spd * random.randint(self.spd_rng[2],self.spd_rng[3])
@@ -745,6 +744,8 @@ class Astroid(pygame.sprite.Sprite):
         self.image = random.choice(self.images[self.pts - 1])
         self.orignial_img = self.image # Save image for later
         self.rect = self.image.get_rect(center = (self.pos[0],self.pos[1]))
+        
+        self.explosion = 0
     
     def update(self):
         # Move with given speed
@@ -800,10 +801,15 @@ class Astroid(pygame.sprite.Sprite):
             
             self.image = random.choice(self.images[self.pts - 1])
             self.orignial_img = self.image
+            
+            self.explosion = 0
         else:
             # Make an explosion if it is on the window
             if self.pos[1] > -10 and self.pos[1] < self.HEIGHT + 100:
-                Explosion(self.spd, GLOBAL.explosion_group, [1,1, 1,1], self.pos)
+                # Only display one explosion
+                if self.explosion == 0:
+                    self.explosion = 1
+                    Explosion(self.spd, GLOBAL.explosion_group, [1,1, 1,1], self.pos)
             self.kill()
     
     def split(self):
@@ -823,7 +829,10 @@ class Astroid(pygame.sprite.Sprite):
         
         old_pos = self.pos
         if self.pos[1] > -10 and self.pos[1] < self.HEIGHT + 100:
-                Explosion(self.spd, GLOBAL.explosion_group, [1,1, 1,1], old_pos)
+            # Only display one explosion
+            if self.explosion == 0:
+                self.explosion = 1
+                Explosion(self.spd, GLOBAL.explosion_group, [1,1, 1,1], self.pos)
         self.regen()
         
         if splitted_pts > 0:
@@ -880,15 +889,20 @@ class Explosion(pygame.sprite.Sprite):
         # Move with given speed
         self.pos = [self.pos[0]+self.spd[0], self.pos[1]+self.spd[1]]
         
-        # Rotate
-        self.image = pygame.transform.rotate(self.orignial_imgs[self.image_index], self.angle)
-        
         timeSinceEnter = pygame.time.get_ticks() - self.start_time
         #print(timeSinceEnter)
-        if (self.image_index + 1) * 5 <= timeSinceEnter and self.image_index < len(self.images):
-            self.image_index += 1
-            self.start_time = pygame.time.get_ticks()
-        elif self.image_index == len(self.images) - 1:
+        #print(self.image_index, len(self.images), len(self.orignial_imgs))
+        
+        if self.image_index < len(self.images) - 1:
+            # Rotate
+            self.image = pygame.transform.rotate(self.orignial_imgs[self.image_index], self.angle)
+            
+            if (self.image_index + 1) * 5 <= timeSinceEnter:
+                # Move to the next image
+                self.image_index += 1
+                self.start_time = pygame.time.get_ticks()
+        # Destroy the object the animation has finished
+        elif self.image_index >= len(self.images) - 1:
             self.kill()
         
         # If object moves out of screen

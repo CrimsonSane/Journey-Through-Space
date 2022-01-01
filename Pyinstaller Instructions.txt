@@ -1,4 +1,9 @@
 This would depend on where pyinstaller is installed on your computer in order to
-run the command on a command prompt
+run the command on a command prompt. An example is that pyinstaller could be located in the user's local folder.
+This is just a matter of looking up the executable for pyinstaller.
 
-in a command prompt or terminal type: pyinstaller Game/main.py "Journey Through Space.spec"
+Make sure all dependencies are installed before running otherwise it won't work.
+
+in a command prompt or terminal type: pyinstaller "Journey Through Space.spec"
+
+if you want a more custom install you refer to pyinstaller's documentation.

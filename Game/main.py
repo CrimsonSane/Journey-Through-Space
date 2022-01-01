@@ -46,7 +46,7 @@ def main():
     debug = gen_func.get_txt("DEBUG_MODE")
     
     # Create the stars
-    gen_func.create_stars(100, GLOBAL.stars_group)
+    gen_func.create_stars(84, GLOBAL.stars_group)
     
     # Create the player ship
     player = objects.Player_space_ship([int(GLOBAL.WIN_WIDTH/2),GLOBAL.WIN_HEIGHT -100],
@@ -139,13 +139,15 @@ def get_scaled_display(current_disply):
 def set_window_display():
     
     global window_display
-    
-    if settings_obj.fullscreen:
-        window_display = pygame.display.set_mode((pygame.display.Info().current_w, pygame.display.Info().current_h),
-                                                 pygame.FULLSCREEN | pygame.DOUBLEBUF, 16)
-    else:
-        window_display = pygame.display.set_mode((window_display.get_width(), window_display.get_height()),
-                                                 pygame.RESIZABLE | pygame.DOUBLEBUF, 16)
+    if settings_obj.fullscreen != settings_obj.latest_fulscrn:
+        if settings_obj.fullscreen:
+            window_display = pygame.display.set_mode((settings_obj.resolution[0], settings_obj.resolution[1]),
+                                                     pygame.FULLSCREEN | pygame.DOUBLEBUF, 16)
+            settings_obj.latest_fulscrn = settings_obj.fullscreen
+        else:
+            window_display = pygame.display.set_mode((window_display.get_width(), window_display.get_height()),
+                                                     pygame.RESIZABLE | pygame.DOUBLEBUF, 16)
+            settings_obj.latest_fulscrn = settings_obj.fullscreen
     
     scaled_display = get_scaled_display(window_display)
     window_display.blit(scaled_display[0],scaled_display[1])
