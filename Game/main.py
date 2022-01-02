@@ -283,8 +283,6 @@ def settings_scene(user_inpt, obj_lst):
     update_objects(obj_lst, user_inpt)
     MENUS[1].update(user_inpt)
     
-    update_sound_vols()
-    
     # Output objects:
     draw_objects(obj_lst, game_display)
     MENUS[1].draw(game_display)
