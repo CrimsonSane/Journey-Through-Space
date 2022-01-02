@@ -1,6 +1,6 @@
 import os, pygame
 
-VERSION = "0.0.2"
+VERSION = "0.0.3dev"
 
 # Declare game window width and height
 WIN_WIDTH = 1200
