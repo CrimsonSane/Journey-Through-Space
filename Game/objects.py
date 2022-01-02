@@ -457,12 +457,11 @@ class Player_space_ship(pygame.sprite.Sprite):
         
         # When a change in health happens
         if self.latest_health != self.health and self.health > 0:
-            self.shield_start_time = pygame.time.get_ticks()
             self.shield_bool = True
             self.latest_health = self.health
         # Activate shield
         elif self.shield_bool:
-            self.shield(self.shield_start_time, self.shield_time)
+            self.shield(self.shield_time)
         # Health reaches zero
         elif self.health <= 0 and self.display_player == True:
             Explosion([0,0], GLOBAL.explosion_group, [3,3, 5,5], self.pos)
@@ -530,8 +529,6 @@ class Player_space_ship(pygame.sprite.Sprite):
                     # It plays a lazer sound if the astroid hits while the player has a shield
                     gen_func.play_sound(GLOBAL.lazer_hit, GLOBAL.LAZER_CHANNEL)
     
-    def shield(self, start_time, on_time):
-        current_time, target_time = gen_func.timer(start_time, on_time)
     def lazer_cooldown_setup(self):
         # Lazer cooldown setup
         COOLDOWN_TIME = 10
@@ -545,12 +542,16 @@ class Player_space_ship(pygame.sprite.Sprite):
                 self.lazer_cooldown -= 1
                 self.shoot_start_time = -1
     
+    def shield(self, on_time):
+        self.shield_start_time = gen_func.get_start_time(self.shield_start_time)
+        current_time, target_time = gen_func.timer(self.shield_start_time, on_time)
         BLINK_TIME = target_time - 1000
         
         # The shield is done 
         if current_time >= target_time:
             self.shield_bool = False
             self.display_shield = False
+            self.shield_start_time = -1
         
         # The shield is being displayed
         elif current_time < BLINK_TIME:
