@@ -1,9 +1,23 @@
 This would depend on where pyinstaller is installed on your computer in order to
-run the command on a command prompt. An example is that pyinstaller could be located in the user's local folder.
-This is just a matter of looking up the executable for pyinstaller.
+run the command on a command prompt.
 
 Make sure all dependencies are installed before running otherwise it won't work.
+Check requirements.txt for all the game's dependencies and of course you would need to install pyinstaller as well.
 
-in a command prompt or terminal type: pyinstaller "Journey Through Space.spec"
+Here is a list of those locations according to the pyinstaller docs:
+
+- Windows: C:\PythonXY\Scripts where XY stands for the major and minor Python version number, for example C:\Python34\Scripts for Python 3.4)
+- GNU/Linux: /usr/bin/
+- OS X (using the default Apple-supplied Python) /usr/bin
+- OS X (using Python installed by homebrew) /usr/local/bin
+- OS X (using Python installed by macports) /opt/local/bin
+
+
+In a command prompt or terminal type: [the location to pyinstaller] "Journey Through Space.spec"
+
+
+By default all installs create a folder containing other files with the executable. Thought it isn't recommended but 
+if you want only one executable file, type --onefile as the argument for pyinstaller and make sure to copy the 
+Assets folder and Settings.txt in the same place as the executable. 
 
 if you want a more custom install you refer to pyinstaller's documentation.
