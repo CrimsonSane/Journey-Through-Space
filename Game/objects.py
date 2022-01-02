@@ -471,12 +471,7 @@ class Player_space_ship(pygame.sprite.Sprite):
         if self.health == 0:
             self.pos = [int(GLOBAL.WIN_WIDTH/2),GLOBAL.WIN_HEIGHT -100]
         
-        # Lazer cooldown setup
-        if self.lazer_cooldown != 0:
-            time = pygame.time.get_ticks()
-            if time >= 1000:
-                time = 0
-                self.lazer_cooldown -= 1
+        self.lazer_cooldown_setup()
         
         # if player isn't dead
         if self.health > 0:
@@ -537,6 +532,19 @@ class Player_space_ship(pygame.sprite.Sprite):
     
     def shield(self, start_time, on_time):
         current_time, target_time = gen_func.timer(start_time, on_time)
+    def lazer_cooldown_setup(self):
+        # Lazer cooldown setup
+        COOLDOWN_TIME = 10
+        
+        if self.lazer_cooldown > 0:
+            self.shoot_start_time = gen_func.get_start_time(self.shoot_start_time)
+            
+            current_time, target_time = gen_func.timer(self.shoot_start_time, COOLDOWN_TIME)
+            
+            if current_time >= target_time:
+                self.lazer_cooldown -= 1
+                self.shoot_start_time = -1
+    
         BLINK_TIME = target_time - 1000
         
         # The shield is done 
