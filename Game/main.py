@@ -215,7 +215,8 @@ def game_scene(user_inpt, obj_lst, debug):
     gen_func.create_items()
     zone_updater()
     
-    if plyer.health == 0:
+    # display game over if dead
+    if plyer.health <= 0:
         GLOBAL.scene_strng = "GAME_OVER_SCENE"
     
     # Output objects:
