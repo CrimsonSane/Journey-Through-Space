@@ -573,6 +573,16 @@ class Player_space_ship(pygame.sprite.Sprite):
                       group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
                 self.lazer_cooldown = self.LAZER_COOLDOWNS[0]
                 gen_func.play_sound(GLOBAL.lazer_shooting, GLOBAL.LAZER_CHANNEL)
+        # Rapid fire player lazer
+        elif self.lazer_type == "PLAYER_RAPID_LAZER":
+            
+            if self.lazer_cooldown <= 0:
+                Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-7, angle=self.angle,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
+                Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-7, angle=self.angle,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
+                self.lazer_cooldown = self.LAZER_COOLDOWNS[1]
+                gen_func.play_sound(GLOBAL.lazer_shooting, GLOBAL.LAZER_CHANNEL)
     
     def check_collision(self, group):
         collide_lst_index = self.rect.collidelist(group.sprites())
