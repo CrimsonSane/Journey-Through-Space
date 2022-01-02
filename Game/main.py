@@ -224,7 +224,28 @@ def game_scene(user_inpt, obj_lst, debug):
     display_health(plyer.health, game_display)
     score_txt = gen_func.get_font(36).render("Score: {:,}".format(GLOBAL.score),1,(255,255,255))
     game_display.blit(score_txt, score_txt.get_rect(center = (int(GLOBAL.WIN_WIDTH/2),36)))
+    display_gun(plyer, game_display)
     draw_debug_screen(debug, plyer, game_display)
+
+def display_gun(plyr, display):
+    OFFSET = 100
+    MED_OFFSET = 80
+    LOW_OFFSET = 20
+    gun_imgs = [gen_func.get_image('Assets','BasicLazerGun.png', (OFFSET,OFFSET)),
+                gen_func.get_image('Assets','RapidFireLazerGun.png', (OFFSET,OFFSET)),
+                gen_func.get_image('Assets','CannonLazerGun.png', (OFFSET,OFFSET))]
+    ui_pos = (GLOBAL.WIN_WIDTH - OFFSET, GLOBAL.WIN_HEIGHT - OFFSET)
+    
+    y_pos_offset = (MED_OFFSET + LOW_OFFSET) - MED_OFFSET * (plyr.lazer_cooldown / plyr.LAZER_COOLDOWNS[0])
+    
+    cooldwn_bar_pos = [[GLOBAL.WIN_WIDTH - OFFSET, GLOBAL.WIN_HEIGHT - LOW_OFFSET],
+                       [GLOBAL.WIN_WIDTH - OFFSET, GLOBAL.WIN_HEIGHT - y_pos_offset]]
+    pygame.draw.line(display, (255,255,255), cooldwn_bar_pos[0], cooldwn_bar_pos[1], 6)
+    
+    if plyr.lazer_type == "PLAYER_NORM_LAZER":
+        display.blit(gun_imgs[0], ui_pos)
+    elif plyr.lazer_type == "PLAYER_RAPID_LAZER":
+        display.blit(gun_imgs[1], ui_pos)
 
 def game_over_scene(user_inpt, obj_lst, debug):
     plyer = obj_lst[1] # Player is second on the list
