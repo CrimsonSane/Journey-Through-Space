@@ -75,6 +75,7 @@ def main():
             running = False
         
         set_window_display()
+        update_sound_vols()
         
         if GLOBAL.scene_strng == "MAIN_SCENE":
             # Run main_scene
