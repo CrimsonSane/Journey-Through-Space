@@ -23,6 +23,7 @@ stars_group = pygame.sprite.Group()
 astroids_group = pygame.sprite.Group()
 lazer_group = pygame.sprite.Group()
 explosion_group = pygame.sprite.Group()
+planet_group = pygame.sprite.Group()
 mving_txt_group = pygame.sprite.Group()
 item_group = pygame.sprite.Group()
 

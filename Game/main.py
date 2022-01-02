@@ -54,8 +54,9 @@ def main():
     
     # Lists containing objects to update and draw
     menu_objs_list = [GLOBAL.stars_group]
+    menu_objs_list = [GLOBAL.stars_group, GLOBAL.planet_group]
     
-    game_objs_list = [GLOBAL.stars_group, player, GLOBAL.lazer_group, GLOBAL.astroids_group, GLOBAL.explosion_group,
+    game_objs_list = [GLOBAL.stars_group, GLOBAL.planet_group, player, GLOBAL.lazer_group, GLOBAL.astroids_group, GLOBAL.explosion_group,
                       GLOBAL.item_group, GLOBAL.mving_txt_group]
     
     # Initalize current music as the title song
@@ -204,7 +205,7 @@ def zone_updater():
             GLOBAL.zone_id += 1
 
 def game_scene(user_inpt, obj_lst, debug):
-    plyer = obj_lst[1] # Player is second on the list
+    plyer = obj_lst[2] # Player is third on the list
     
     pygame.display.update()
     GLOBAL.clock.tick(FPS)

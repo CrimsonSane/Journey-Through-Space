@@ -40,6 +40,11 @@ def create_stars(amount, group):
                       get_image("Assets","Star1.png",(0,0))],
                      [0,random.randint(1,2)], group, [0,0, 1,2])
 
+# Creates amount of planets from passed argument
+def create_planets(amount, group):
+    for i in range(amount):
+        objects.Planet([0,random.randint(1,2)], group, [0,0, 1,2])
+
 # Creates amount of astroids from passed argument
 def create_astroids(amount, group):
     for i in range(amount):
