@@ -170,9 +170,12 @@ def unknown_scene(user_inpt):
 def reload_scene(plyer):
     GLOBAL.zone_id = 1
     GLOBAL.scroll_spd = GLOBAL.ZONE_VALUES[0][1]
+    
     plyer.health = 3
     plyer.latest_health = plyer.health
     plyer.display_player = True
+    plyer.lazer_type = "PLAYER_NORM_LAZER"
+    
     GLOBAL.astroids_group.empty()
     GLOBAL.mving_txt_group.empty()
     GLOBAL.lazer_group.empty()
