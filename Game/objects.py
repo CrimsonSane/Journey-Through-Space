@@ -435,7 +435,7 @@ class Player_space_ship(pygame.sprite.Sprite):
         self.fire_index = 0
         
         self.lazer_type = "PLAYER_NORM_LAZER"
-        self.LAZER_COOLDOWNS = [13]
+        self.LAZER_COOLDOWNS = [8, 4, 9]
         self.lazer_cooldown = self.LAZER_COOLDOWNS[0]
         self.shoot_start_time = 0
     
