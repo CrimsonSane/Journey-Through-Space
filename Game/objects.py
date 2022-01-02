@@ -414,7 +414,7 @@ class Player_space_ship(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = (self.pos[0],self.pos[1]))
         
         self.shield_time = 5000
-        self.shield_start_time = 0
+        self.shield_start_time = -1
         self.shield_bool = False
         self.display_shield = False
         self.bubble_img = gen_func.get_image("Assets","Bubble.png", (0,0))
@@ -437,7 +437,7 @@ class Player_space_ship(pygame.sprite.Sprite):
         self.lazer_type = "PLAYER_NORM_LAZER"
         self.LAZER_COOLDOWNS = [8, 4, 9]
         self.lazer_cooldown = self.LAZER_COOLDOWNS[0]
-        self.shoot_start_time = 0
+        self.shoot_start_time = -1
     
     def update(self, key_butns):
         # Move the ship as long as it has velocity
