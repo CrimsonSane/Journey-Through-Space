@@ -48,12 +48,14 @@ def main():
     # Create the stars
     gen_func.create_stars(84, GLOBAL.stars_group)
     
+    # Create planets
+    gen_func.create_planets(4, GLOBAL.planet_group)
+    
     # Create the player ship
     player = objects.Player_space_ship([int(GLOBAL.WIN_WIDTH/2),GLOBAL.WIN_HEIGHT -100],
                                        gen_func.get_image("Assets","SpaceShip.png", (0,0)))
     
     # Lists containing objects to update and draw
-    menu_objs_list = [GLOBAL.stars_group]
     menu_objs_list = [GLOBAL.stars_group, GLOBAL.planet_group]
     
     game_objs_list = [GLOBAL.stars_group, GLOBAL.planet_group, player, GLOBAL.lazer_group, GLOBAL.astroids_group, GLOBAL.explosion_group,
