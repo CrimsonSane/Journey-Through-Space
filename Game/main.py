@@ -2,7 +2,7 @@
 # Journey Through Space Game
 # This is a complete redo of the old and unorganized codebase
 
-import os, pygame
+import os, pygame, random
 
 # Initialize mixer before everything else
 pygame.mixer.pre_init(44100, 32, 1, 512)
