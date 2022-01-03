@@ -234,7 +234,17 @@ def display_gun(plyr, display):
     LOW_OFFSET = 20
     gun_imgs = [gen_func.get_image('Assets','BasicLazerGun.png', (OFFSET,OFFSET)),
                 gen_func.get_image('Assets','RapidFireLazerGun.png', (OFFSET,OFFSET)),
-                gen_func.get_image('Assets','CannonLazerGun.png', (OFFSET,OFFSET))]
+                gen_func.get_image('Assets','CannonLazerGun.png', (OFFSET,OFFSET)),
+                gen_func.get_image('Assets','SplitLazerGun.png', (OFFSET,OFFSET)),
+                gen_func.get_image('Assets','PiercingLazerGun.png', (OFFSET,OFFSET)),
+                gen_func.get_image('Assets','SpreadLazerGun.png', (OFFSET,OFFSET))]
+    WEAPONS = ["PLAYER_NORM_LAZER",
+               "PLAYER_RAPID_LAZER",
+               "PLAYER_CANNON_LAZER",
+               "PLAYER_SPLIT_LAZER",
+               "PLAYER_PIERCE_LAZER",
+               "PLAYER_SPREAD_LAZER"]
+    
     ui_pos = (GLOBAL.WIN_WIDTH - OFFSET, GLOBAL.WIN_HEIGHT - OFFSET)
     
     y_pos_offset = (MED_OFFSET + LOW_OFFSET) - MED_OFFSET * (plyr.lazer_cooldown / plyr.LAZER_COOLDOWNS[0])
