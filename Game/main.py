@@ -365,7 +365,11 @@ def update_objects(objs, plyr_keys):
 def draw_objects(objs, disply):
     disply.fill((0,0,0)) # Fills background to black
     for index in range(len(objs)):
-        objs[index].draw(disply)
+        if type(objs[index]) == pygame.sprite.Group:
+            for sprite in objs[index].sprites():
+                sprite.draw(disply)
+        else:
+            objs[index].draw(disply)
 
 def get_user_keys(setng_obj):
     key_button = ""
