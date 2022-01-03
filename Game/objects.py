@@ -606,9 +606,9 @@ class Player_space_ship(pygame.sprite.Sprite):
         elif self.lazer_type == "PLAYER_PIERCE_LAZER":
             
             if self.lazer_cooldown <= 0:
-                Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-5, angle=self.angle,
+                Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-11, angle=self.angle,
                       group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
-                Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-5, angle=self.angle,
+                Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-11, angle=self.angle,
                       group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
                 self.lazer_cooldown = self.LAZER_COOLDOWNS[4]
                 gen_func.play_sound(GLOBAL.lazer_shooting, GLOBAL.LAZER_CHANNEL)
