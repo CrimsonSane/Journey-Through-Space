@@ -621,7 +621,7 @@ class Player_space_ship(pygame.sprite.Sprite):
                 
                 Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-6, angle=self.angle + OFFSET_ANGLE0,
                       group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
-                Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-6, angle=self.angle + OFFSET_ANGLE1,
+                Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-6, angle=self.angle + OFFSET_ANGLE1,
                       group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
                 
                 Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-6, angle=self.angle - OFFSET_ANGLE1,
