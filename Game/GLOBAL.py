@@ -49,7 +49,9 @@ MUSIC_TRACKS = [os.path.join("Assets", "Gaze Upon the Stars.wav"),
                 os.path.join("Assets", "Nebulus.wav")]
 
 lazer_shooting = pygame.mixer.Sound(os.path.join("Assets", "lazer.wav"))
+lazer_cannon_shooting = pygame.mixer.Sound(os.path.join("Assets", "Cannon.ogg"))
 lazer_hit = pygame.mixer.Sound(os.path.join("Assets", "lazerHit.wav"))
+lazer_cannon_hit = pygame.mixer.Sound(os.path.join("Assets", "CannonExplode.ogg"))
 astroid_explosion = pygame.mixer.Sound(os.path.join("Assets", "astroidHit.wav"))
 menu_selection = pygame.mixer.Sound(os.path.join("Assets", "menuSelection.wav"))
 menu_select = pygame.mixer.Sound(os.path.join("Assets", "menuSelect.wav"))
