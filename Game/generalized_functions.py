@@ -145,11 +145,12 @@ def play_random_music():
 # Creates items when certain conditions are met
 def create_items():
     ran_nums = [random.randint(1,4), random.randint(1,8)]
-    ITEM_NAMES = ["HAMMER"]
-    SPAWN_INTERVAL = 1500
+    ITEM_NAMES = ["HAMMER", "NORMAL_GUN", "RAPID_GUN", "CANNON_GUN", "SPLIT_GUN", "PIERCE_GUN", "SPREAD_GUN"]
+    ran_item = random.randint(0,len(ITEM_NAMES)-1)
+    SPAWN_INTERVAL = 1000
     
     #print(round(GLOBAL.current_tick/SPAWN_INTERVAL,2), round(GLOBAL.current_tick/SPAWN_INTERVAL,2).is_integer())
     if round(GLOBAL.current_tick/SPAWN_INTERVAL,2).is_integer():
         if ran_nums[0] == ran_nums[1]:
-            objects.Item(ITEM_NAMES[0], [random.randint(0,GLOBAL.WIN_WIDTH),random.randint(-GLOBAL.WIN_HEIGHT,0)],
+            objects.Item(ITEM_NAMES[ran_item], [random.randint(0,GLOBAL.WIN_WIDTH),random.randint(-GLOBAL.WIN_HEIGHT,0)],
                          [0,6], GLOBAL.item_group)

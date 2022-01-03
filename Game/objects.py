@@ -1165,11 +1165,57 @@ class Item(pygame.sprite.Sprite):
         self.pos = pos
         self.angle = 0
         self.angle_spd = 5
+        self.desc = ""
+        
+        ITEM_SIZE = (32, 32)
+        GUN_ITEM_SIZE = (64, 64)
         
         if self.item_name == "HAMMER":
-            self.image = gen_func.get_image("Assets","Hammer.png",(32,32))
+            self.image = gen_func.get_image("Assets","Hammer.png",ITEM_SIZE)
+            self.desc = "HEALTH"
             self.og_image = self.image
+        
+        elif self.item_name == "NORMAL_GUN":
+            self.image = gen_func.get_image("Assets","BasicLazerGun.png",GUN_ITEM_SIZE)
+            self.og_image = self.image
+            self.desc = "NORMAL"
+            self.lazer_type = "PLAYER_NORM_LAZER"
+        
+        elif self.item_name == "RAPID_GUN":
+            self.image = gen_func.get_image("Assets","RapidFireLazerGun.png",GUN_ITEM_SIZE)
+            self.og_image = self.image
+            self.desc = "RAPID"
+            self.lazer_type = "PLAYER_RAPID_LAZER"
+        
+        elif self.item_name == "CANNON_GUN":
+            self.image = gen_func.get_image("Assets","CannonLazerGun.png",GUN_ITEM_SIZE)
+            self.og_image = self.image
+            self.desc = "CANNON"
+            self.lazer_type = "PLAYER_CANNON_LAZER"
+        
+        elif self.item_name == "SPLIT_GUN":
+            self.image = gen_func.get_image("Assets","SplitLazerGun.png",GUN_ITEM_SIZE)
+            self.og_image = self.image
+            self.desc = "SPLIT"
+            self.lazer_type = "PLAYER_SPLIT_LAZER"
+        
+        elif self.item_name == "PIERCE_GUN":
+            self.image = gen_func.get_image("Assets","PiercingLazerGun.png",GUN_ITEM_SIZE)
+            self.og_image = self.image
+            self.desc = "PIERCE"
+            self.lazer_type = "PLAYER_PIERCE_LAZER"
+        
+        elif self.item_name == "SPREAD_GUN":
+            self.image = gen_func.get_image("Assets","SpreadLazerGun.png",GUN_ITEM_SIZE)
+            self.og_image = self.image
+            self.desc = "SPREAD"
+            self.lazer_type = "PLAYER_SPREAD_LAZER"
+        
         self.rect = self.image.get_rect(center = (self.pos[0], self.pos[1]))
+        
+        self.text = gen_func.get_font(20).render(self.desc,1,(255,255,255))
+        self.text_rect = self.text.get_rect(center = (self.pos[0], self.pos[1]+32))
+        
     
     def update(self):
         # Move the text
@@ -1179,6 +1225,8 @@ class Item(pygame.sprite.Sprite):
         
         self.image = pygame.transform.rotate(self.og_image, self.angle)
         self.rect = self.image.get_rect(center = (self.pos[0], self.pos[1]))
+        
+        self.text_rect = self.text.get_rect(center = (self.pos[0], self.pos[1]+32))
         
         # If it is outside of the screen
         if self.pos[1] < -GLOBAL.WIN_HEIGHT or self.pos[1] > GLOBAL.WIN_HEIGHT:
@@ -1195,6 +1243,17 @@ class Item(pygame.sprite.Sprite):
                 gen_func.play_sound(GLOBAL.item_collect, GLOBAL.PLAYER_CHANNEL)
                 if plyer.health < plyer.MAX_HEALTH:
                     plyer.health += 1
+                    self.kill()
+                else:
+                    GLOBAL.score += BONUS_SCORE
+                    Moving_text(str(BONUS_SCORE), self.pos, [self.spd[0],-self.spd[1]], GLOBAL.mving_txt_group)
+                    
+                    self.kill()
+            # Gun changes the player's lazer type to the collected item and give bonus points if you collect the same gun
+            if "GUN" in self.item_name:
+                gen_func.play_sound(GLOBAL.item_collect, GLOBAL.PLAYER_CHANNEL)
+                if plyer.lazer_type != self.lazer_type:
+                    plyer.lazer_type = self.lazer_type
                     self.kill()
                 else:
                     GLOBAL.score += BONUS_SCORE
@@ -1230,6 +1289,6 @@ class Item(pygame.sprite.Sprite):
             print("There are no objects to collide with")
     
     def draw(self, disply):
-        # Only display if on screen
-        if self.pos[1] > -10:
-            disply.blit(self.image, self.rect)
+        disply.blit(self.image, self.rect)
+        if self.desc != "":
+            disply.blit(self.text, self.text_rect)
