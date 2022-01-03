@@ -119,8 +119,8 @@ def play_sound(sound, mixer):
     pygame.mixer.Channel(mixer).play(sound)
 
 # Plays music and returns currently playing song
-def play_music(music, current_music):
-    if not pygame.mixer.music.get_busy() or current_music != music:
+def play_music(music):
+    if not pygame.mixer.music.get_busy() or GLOBAL.current_music != music:
         pygame.mixer.music.load(music)
         pygame.mixer.music.play()
     
@@ -134,6 +134,13 @@ def get_txt(name):
             return True
     except:
         return False
+
+# Plays random music and returns currently playing song
+def play_random_music():
+    while 1:
+        rand_song = random.randint(1,len(GLOBAL.MUSIC_TRACKS) - 1)
+        if GLOBAL.current_music != GLOBAL.MUSIC_TRACKS[rand_song]:
+            return play_music(GLOBAL.MUSIC_TRACKS[rand_song])
 
 # Creates items when certain conditions are met
 def create_items():

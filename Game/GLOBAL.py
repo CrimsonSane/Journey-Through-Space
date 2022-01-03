@@ -46,7 +46,12 @@ pause_ticks = 0
 
 # Sounds
 MUSIC_TRACKS = [os.path.join("Assets", "Gaze Upon the Stars.wav"),
-                os.path.join("Assets", "Nebulus.wav")]
+                os.path.join("Assets", "Nebulus.wav"),
+                os.path.join("Assets", "Cosmic Glory.wav"),
+                os.path.join("Assets", "Dead Space.wav")]
+
+# Initalize current music as the title song
+current_music = MUSIC_TRACKS[0]
 
 lazer_shooting = pygame.mixer.Sound(os.path.join("Assets", "lazer.wav"))
 lazer_cannon_shooting = pygame.mixer.Sound(os.path.join("Assets", "Cannon.ogg"))
