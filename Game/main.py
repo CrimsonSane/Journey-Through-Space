@@ -247,16 +247,14 @@ def display_gun(plyr, display):
     
     ui_pos = (GLOBAL.WIN_WIDTH - OFFSET, GLOBAL.WIN_HEIGHT - OFFSET)
     
-    y_pos_offset = (MED_OFFSET + LOW_OFFSET) - MED_OFFSET * (plyr.lazer_cooldown / plyr.LAZER_COOLDOWNS[0])
+    for i in range(len(WEAPONS)):
+        if plyr.lazer_type == WEAPONS[i]:
+            display.blit(gun_imgs[i], ui_pos)
+            y_pos_offset = (MED_OFFSET + LOW_OFFSET) - MED_OFFSET * (plyr.lazer_cooldown / plyr.LAZER_COOLDOWNS[i])
     
-    cooldwn_bar_pos = [[GLOBAL.WIN_WIDTH - OFFSET, GLOBAL.WIN_HEIGHT - LOW_OFFSET],
+            cooldwn_bar_pos = [[GLOBAL.WIN_WIDTH - OFFSET, GLOBAL.WIN_HEIGHT - LOW_OFFSET],
                        [GLOBAL.WIN_WIDTH - OFFSET, GLOBAL.WIN_HEIGHT - y_pos_offset]]
-    pygame.draw.line(display, (255,255,255), cooldwn_bar_pos[0], cooldwn_bar_pos[1], 6)
-    
-    if plyr.lazer_type == "PLAYER_NORM_LAZER":
-        display.blit(gun_imgs[0], ui_pos)
-    elif plyr.lazer_type == "PLAYER_RAPID_LAZER":
-        display.blit(gun_imgs[1], ui_pos)
+            pygame.draw.line(display, (255,255,255), cooldwn_bar_pos[0], cooldwn_bar_pos[1], 6)
 
 def game_over_scene(user_inpt, obj_lst, debug):
     plyer = obj_lst[1] # Player is second on the list
