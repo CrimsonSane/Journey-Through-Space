@@ -61,9 +61,6 @@ def main():
     game_objs_list = [GLOBAL.stars_group, GLOBAL.planet_group, player, GLOBAL.lazer_group, GLOBAL.astroids_group, GLOBAL.explosion_group,
                       GLOBAL.item_group, GLOBAL.mving_txt_group]
     
-    # Initalize current music as the title song
-    current_music = GLOBAL.MUSIC_TRACKS[0]
-    
     running = True
     
     while running:
@@ -82,22 +79,23 @@ def main():
         
         if GLOBAL.scene_strng == "MAIN_SCENE":
             # Run main_scene
-            current_music = gen_func.play_music(GLOBAL.MUSIC_TRACKS[0], current_music)
+            GLOBAL.current_music = gen_func.play_music(GLOBAL.MUSIC_TRACKS[0])
             main_scene(player_keys, menu_objs_list, debug)
         elif GLOBAL.scene_strng == "SETTING_SCENE":
             # Run settings_scene
-            current_music = gen_func.play_music(GLOBAL.MUSIC_TRACKS[0], current_music)
+            GLOBA.current_music = gen_func.play_music(GLOBAL.MUSIC_TRACKS[0])
             settings_scene(player_keys, menu_objs_list)
         elif "CONFIGURE_" in GLOBAL.scene_strng:
             # Run configuration_scene
-            current_music = gen_func.play_music(GLOBAL.MUSIC_TRACKS[0], current_music)
+            GLOBAL.current_music = gen_func.play_music(GLOBAL.MUSIC_TRACKS[0])
             configuration_scene(player_keys, menu_objs_list)
         elif GLOBAL.scene_strng == "RELOAD_GAME":
             # Reload and reopen game_scene
             reload_scene(player)
         elif GLOBAL.scene_strng == "GAME_SCENE":
             # Run game_scene
-            current_music = gen_func.play_music(GLOBAL.MUSIC_TRACKS[1], current_music)
+            if GLOBAL.current_music == "":
+                GLOBAL.current_music = gen_func.play_random_music()
             game_scene(player_keys, game_objs_list, debug)
         elif GLOBAL.scene_strng == "GAME_OVER_SCENE":
             # Run game_over_scene
@@ -187,6 +185,7 @@ def reload_scene(plyer):
     GLOBAL.score = 0
     gen_func.create_zone_text()
     
+    GLOBAL.current_music = gen_func.play_random_music()
     GLOBAL.scene_strng = "GAME_SCENE"
 
 def zone_updater():
@@ -195,7 +194,9 @@ def zone_updater():
     
     if cur_time >= tar_time:
         if GLOBAL.zone_id < 5:
+            GLOBAL.current_music = gen_func.play_random_music()
             GLOBAL.zone_id += 1
+            
             GLOBAL.scroll_spd = GLOBAL.ZONE_VALUES[0][GLOBAL.zone_id]
             astroid_amt = GLOBAL.ZONE_VALUES[1][GLOBAL.zone_id] - GLOBAL.ZONE_VALUES[1][GLOBAL.zone_id - 1]
             
@@ -204,6 +205,7 @@ def zone_updater():
             gen_func.create_zone_text()
             #print(GLOBAL.zone_id)
         else:
+            GLOBAL.current_music = gen_func.play_random_music()
             GLOBAL.zone_id += 1
 
 def game_scene(user_inpt, obj_lst, debug):
