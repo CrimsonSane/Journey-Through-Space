@@ -83,7 +83,7 @@ def main():
             main_scene(player_keys, menu_objs_list, debug)
         elif GLOBAL.scene_strng == "SETTING_SCENE":
             # Run settings_scene
-            GLOBA.current_music = gen_func.play_music(GLOBAL.MUSIC_TRACKS[0])
+            GLOBAL.current_music = gen_func.play_music(GLOBAL.MUSIC_TRACKS[0])
             settings_scene(player_keys, menu_objs_list)
         elif "CONFIGURE_" in GLOBAL.scene_strng:
             # Run configuration_scene
