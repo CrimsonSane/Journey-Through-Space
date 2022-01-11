@@ -42,7 +42,8 @@ score = 0
 zone_id = 1
 scroll_spd = 2
 start_game_ticks = 0
-pause_ticks = 0
+paused = False
+pause_tick = 0
 
 # Sounds
 MUSIC_TRACKS = [os.path.join("Assets", "Gaze Upon the Stars.wav"),
