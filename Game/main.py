@@ -234,7 +234,7 @@ def reload_scene(plyer):
     GLOBAL.score = 0
     gen_func.create_zone_text()
     
-    GLOBAL.current_music = gen_func.play_random_music()
+    GLOBAL.current_music = gen_func.play_music(GLOBAL.MUSIC_TRACKS[1])
     GLOBAL.scene_strng = "GAME_SCENE"
 
 def zone_updater():
