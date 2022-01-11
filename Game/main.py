@@ -287,8 +287,8 @@ def game_scene(user_inpt, obj_lst, debug):
     draw_debug_screen(debug, plyer, game_display)
 
 def display_gun(plyr, display):
-    OFFSET = 100
-    MED_OFFSET = 80
+    OFFSET = 84
+    MED_OFFSET = 64
     LOW_OFFSET = 20
     gun_imgs = [gen_func.get_image('Assets','BasicLazerGun.png', (OFFSET,OFFSET)),
                 gen_func.get_image('Assets','RapidFireLazerGun.png', (OFFSET,OFFSET)),
