@@ -27,8 +27,13 @@ settings_obj.setup_settings()
 # Menus
 MENUS = [objects.Menu("MAIN", settings_obj),
          objects.Menu("SETTINGS", settings_obj),
+         objects.Menu("PAUSE", settings_obj),
+         objects.Menu("GAME_SETTINGS", settings_obj),
          objects.Menu("PLAYER_DEATH", settings_obj),
          objects.Menu("ERROR", settings_obj)]
+
+# Timer for zone updater
+zone_timer = objects.Timer()
 
 # Game display
 game_display = pygame.Surface((GLOBAL.WIN_WIDTH,GLOBAL.WIN_HEIGHT))
@@ -77,6 +82,11 @@ def main():
         set_window_display()
         update_sound_vols()
         
+        if GLOBAL.paused:
+            GLOBAL.pause_tick = gen_func.get_start_time(GLOBAL.pause_tick)
+        else:
+            GLOBAL.pause_tick = -1
+
         if GLOBAL.scene_strng == "MAIN_SCENE":
             # Run main_scene
             GLOBAL.current_music = gen_func.play_music(GLOBAL.MUSIC_TRACKS[0])
@@ -97,6 +107,11 @@ def main():
             if GLOBAL.current_music == "":
                 GLOBAL.current_music = gen_func.play_random_music()
             game_scene(player_keys, game_objs_list, debug)
+        elif GLOBAL.scene_strng == "PAUSE_SCENE" or GLOBAL.scene_strng == "GAME_SETTING_SCENE":
+            # Run pause_scene
+            if GLOBAL.current_music == "":
+                GLOBAL.current_music = gen_func.play_random_music()
+            pause_scene(player_keys, game_objs_list, debug)
         elif GLOBAL.scene_strng == "GAME_OVER_SCENE":
             # Run game_over_scene
             game_over_scene(player_keys, game_objs_list, debug)
@@ -154,21 +169,54 @@ def set_window_display():
     scaled_display = get_scaled_display(window_display)
     window_display.blit(scaled_display[0],scaled_display[1])
 
-def unknown_scene(user_inpt):
+def pause_scene(user_inpt, obj_lst, debug):
+    plyer = obj_lst[2] # Player is third on the list
     
     pygame.display.update()
     GLOBAL.clock.tick(FPS)
     
-    MENUS[3].update(user_inpt)
+    if GLOBAL.scene_strng == "PAUSE_SCENE":
+        MENUS[2].update(user_inpt)
+    else:
+        MENUS[3].update(user_inpt)
+    
+    # Process user input:
+    update_objects(obj_lst, user_inpt)
+
+    if "PAUSE" in user_inpt:
+        GLOBAL.paused = False
+        GLOBAL.menu_selection.play()
+        GLOBAL.scene_strng = "GAME_SCENE"
+    
+    # Output objects:
+    draw_objects(obj_lst, game_display)
+
+    if GLOBAL.scene_strng == "PAUSE_SCENE":
+        MENUS[2].draw(game_display)
+    elif GLOBAL.scene_strng == "GAME_SETTING_SCENE":
+        MENUS[3].draw(game_display)
+
+    display_health(plyer.health, game_display)
+    score_txt = gen_func.get_font(36).render("Score: {:,}".format(GLOBAL.score),1,(255,255,255))
+    game_display.blit(score_txt, score_txt.get_rect(center = (int(GLOBAL.WIN_WIDTH/2),36)))
+    display_gun(plyer, game_display)
+    draw_debug_screen(debug, plyer, game_display)
+
+def unknown_scene(user_inpt):
+    pygame.display.update()
+    GLOBAL.clock.tick(FPS)
+    
+    MENUS[5].update(user_inpt)
     
     game_display.fill((0,0,0)) # Fills background to black
     error_img = gen_func.get_image("Assets","ERROR.png", (420,345))
     
-    MENUS[3].draw(game_display)
+    MENUS[5].draw(game_display)
     game_display.blit(error_img, error_img.get_rect(center = (int(GLOBAL.WIN_WIDTH/2), int(GLOBAL.WIN_HEIGHT/2) - 235)))
     display_version()
 
 def reload_scene(plyer):
+    GLOBAL.paused = False
     GLOBAL.zone_id = 1
     GLOBAL.scroll_spd = GLOBAL.ZONE_VALUES[0][1]
     
@@ -176,7 +224,8 @@ def reload_scene(plyer):
     plyer.latest_health = plyer.health
     plyer.display_player = True
     plyer.lazer_type = "PLAYER_NORM_LAZER"
-    
+    plyer.pos[0] = int(GLOBAL.WIN_WIDTH/2)
+
     GLOBAL.astroids_group.empty()
     GLOBAL.mving_txt_group.empty()
     GLOBAL.lazer_group.empty()
@@ -190,7 +239,7 @@ def reload_scene(plyer):
 
 def zone_updater():
     ZONE_CHANGE_TIME = 120000
-    cur_time, tar_time = gen_func.timer(GLOBAL.start_game_ticks, ZONE_CHANGE_TIME * GLOBAL.zone_id)
+    cur_time, tar_time = zone_timer.start(GLOBAL.start_game_ticks, ZONE_CHANGE_TIME * GLOBAL.zone_id)
     
     if cur_time >= tar_time:
         if GLOBAL.zone_id < 5:
@@ -223,6 +272,11 @@ def game_scene(user_inpt, obj_lst, debug):
     # display game over if dead
     if plyer.health <= 0:
         GLOBAL.scene_strng = "GAME_OVER_SCENE"
+    
+    if "PAUSE" in user_inpt:
+        GLOBAL.paused = True
+        GLOBAL.menu_selection.play()
+        GLOBAL.scene_strng = "PAUSE_SCENE"
     
     # Output objects:
     draw_objects(obj_lst, game_display)
@@ -268,11 +322,11 @@ def game_over_scene(user_inpt, obj_lst, debug):
     
     # Process user input:
     update_objects(obj_lst, user_inpt)
-    MENUS[2].update(user_inpt)
+    MENUS[4].update(user_inpt)
     
     # Output objects:
     draw_objects(obj_lst, game_display)
-    MENUS[2].draw(game_display)
+    MENUS[4].draw(game_display)
     score_txt = gen_func.get_font(36).render("Score: {:,}".format(GLOBAL.score),1,(255,255,255))
     game_display.blit(score_txt, score_txt.get_rect(center = (int(GLOBAL.WIN_WIDTH/2),36)))
     draw_debug_screen(debug, plyer, game_display)
@@ -385,6 +439,8 @@ def get_user_keys(setng_obj):
         if event.type == pygame.KEYDOWN:
             for i in range(len(setng_obj.shoot)):
                 if event.key == setng_obj.shoot[i]: key_button += "ENTER"
+            for i in range(len(setng_obj.pause)):
+                if event.key == setng_obj.pause[i]: key_button += "PAUSE"
     
     # Assign key_button a string of the pressed key
     for i in range(len(setng_obj.move_left)):

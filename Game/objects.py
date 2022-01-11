@@ -25,6 +25,7 @@ class Setting():
         self.move_up = [pygame.K_w,pygame.K_UP]
         self.move_down = [pygame.K_s,pygame.K_DOWN]
         self.shoot = [pygame.K_j,pygame.K_RETURN]
+        self.pause = [pygame.K_p,pygame.K_ESCAPE]
     
     def inc_dec_volume(self, value, vol_type):
         if vol_type == "SOUND":
@@ -164,6 +165,24 @@ class Menu():
                                  46],
                                 ["RELOAD_GAME",
                                  "MAIN_SCENE"]]
+        # PAUSE menu
+        self.pause_mnu = [["CONTINUE",
+                           "SETTINGS",
+                           "RESTART",
+                           "QUIT TO MENU"],
+                          [(self.WIDTH/2,(self.HEIGHT/2)-100),
+                           (self.WIDTH/2,(self.HEIGHT/2)-35),
+                           (self.WIDTH/2,(self.HEIGHT/2)+35),
+                           (self.WIDTH/2,(self.HEIGHT/2)+100)],
+                          [46,
+                           46,
+                           46,
+                           46,
+                           46],
+                          ["GAME_SCENE",
+                           "GAME_SETTING_SCENE",
+                           "RELOAD_GAME",
+                           "MAIN_SCENE"]]
         # MAIN menu
         self.main_mnu = [["PLAY",
                           "SETTINGS",
@@ -198,6 +217,27 @@ class Menu():
                              "CONFIGURE_FULLSCREEN",
                              "CONFIGURE_RESOLUTION",
                              "MAIN_SCENE"]]
+        # GAME_SETTING menu
+        self.game_setting_mnu = [["SOUND: "+str(self.settings_object.sound_volume),
+                                  "MUSIC: "+str(self.settings_object.music_volume),
+                                  "FULLSCREEN: "+str(self.settings_object.fullscreen),
+                                  "RESOLUTION: "+str(self.settings_object.resolution),
+                                  "BACK"],
+                                 [(self.WIDTH/2,50),
+                                  (self.WIDTH/2,120),
+                                  (self.WIDTH/2,190),
+                                  (self.WIDTH/2,260),
+                                  (self.WIDTH/2, self.HEIGHT - 50)],
+                                 [46,
+                                  46,
+                                  46,
+                                  46,
+                                  46],
+                                 ["CONFIGURE_SOUND",
+                                  "CONFIGURE_MUSIC",
+                                  "CONFIGURE_FULLSCREEN",
+                                  "CONFIGURE_RESOLUTION",
+                                  "PAUSE_SCENE"]]
         # ERROR menu
         self.error_mnu = [["ERROR INVALID MENU NAME"],
                          [(self.WIDTH/2,(self.HEIGHT/2))],
@@ -213,6 +253,11 @@ class Menu():
             self.menu_funcs = self.main_mnu
         elif menu_name == "SETTINGS":
             self.menu_funcs = self.setting_mnu
+        elif menu_name == "PAUSE":
+            self.menu_funcs = self.pause_mnu
+        elif menu_name == "GAME_SETTINGS":
+            self.menu_funcs = self.setting_mnu
+            self.menu_funcs[3][len(self.menu_funcs[2]) - 1] = "PAUSE_SCENE"
         elif menu_name == "PLAYER_DEATH":
             self.menu_funcs = self.plyer_death_mnu
         elif menu_name == "ERROR":
@@ -222,11 +267,11 @@ class Menu():
             self.menu_funcs = self.error_mnu
     
     def update(self, key_butns):
-        if self.menu_name == "SETTINGS":
-            self.setting_mnu[0][0] = "SOUND: "+str(self.settings_object.sound_volume)
-            self.setting_mnu[0][1] = "MUSIC: "+str(self.settings_object.music_volume)
-            self.setting_mnu[0][2] = "FULLSCREEN: "+str(self.settings_object.fullscreen)
-            self.setting_mnu[0][3] = "RESOLUTION: "+str(self.settings_object.resolution)
+        if self.menu_name == "SETTINGS" or self.menu_name == "GAME_SETTINGS":
+            self.menu_funcs[0][0] = "SOUND: "+str(self.settings_object.sound_volume)
+            self.menu_funcs[0][1] = "MUSIC: "+str(self.settings_object.music_volume)
+            self.menu_funcs[0][2] = "FULLSCREEN: "+str(self.settings_object.fullscreen)
+            self.menu_funcs[0][3] = "RESOLUTION: "+str(self.settings_object.resolution)
         
         BUTTON_TIME_COOLDOWN = 150
         
@@ -239,7 +284,7 @@ class Menu():
                 if self.config_type == "RESOLUTION":
                     self.configure_resolution(key_butns)
             else:
-                currnt_tme, targt_tme = gen_func.timer(self.but_press_time, BUTTON_TIME_COOLDOWN)
+                currnt_tme, targt_tme = gen_func.unpauseable_timer(self.but_press_time, BUTTON_TIME_COOLDOWN)
                 
                 # Can hold the down key to cycle through options
                 if currnt_tme > targt_tme:
@@ -300,11 +345,14 @@ class Menu():
                             
                             self.config_index = gen_func.get_index_frm_2d_list(GLOBAL.RESOLUTIONS, self.settings_object.resolution)
                 else:
+                    if self.menu_funcs[3][self.but_index] == "GAME_SCENE" or self.menu_funcs[3][self.but_index] == "MAIN_SCENE":
+                        GLOBAL.paused = False
                     GLOBAL.scene_strng = self.menu_funcs[3][self.but_index]
+                    self.but_index = 0
     
     def configure_resolution(self, key_butns):
         BUTTON_TIME_COOLDOWN = 150
-        currnt_tme, targt_tme = gen_func.timer(self.but_press_time, BUTTON_TIME_COOLDOWN)
+        currnt_tme, targt_tme = gen_func.unpauseable_timer(self.but_press_time, BUTTON_TIME_COOLDOWN)
         
         # Move left and right to configure sound volume
         if currnt_tme > targt_tme:
@@ -328,7 +376,7 @@ class Menu():
     
     def configure_fullscreen(self, key_butns):
         BUTTON_TIME_COOLDOWN = 150
-        currnt_tme, targt_tme = gen_func.timer(self.but_press_time, BUTTON_TIME_COOLDOWN)
+        currnt_tme, targt_tme = gen_func.unpauseable_timer(self.but_press_time, BUTTON_TIME_COOLDOWN)
         
         # Move left and right to configure fullscreen mode
         if currnt_tme > targt_tme:
@@ -344,7 +392,7 @@ class Menu():
     
     def configure_vol(self, key_butns, vol_type):
         BUTTON_TIME_COOLDOWN = 150
-        currnt_tme, targt_tme = gen_func.timer(self.but_press_time, BUTTON_TIME_COOLDOWN)
+        currnt_tme, targt_tme = gen_func.unpauseable_timer(self.but_press_time, BUTTON_TIME_COOLDOWN)
         
         # Move left and right to configure sound volume
         if currnt_tme > targt_tme:
@@ -391,6 +439,22 @@ class Menu():
                 
                 disply.blit(rendered_text, rendered_text.get_rect(center = self.menu_funcs[1][butn_index]))
 
+# TIMER CLASS
+class Timer():
+    def __init__(self):
+        self.paused_ticks = 0
+        self.target_time = 0
+
+    def start(self, start_time, time):
+        self.target_time = start_time + time + self.paused_ticks
+        
+        if GLOBAL.paused:
+            self.paused_ticks = GLOBAL.current_tick - GLOBAL.pause_tick
+        elif self.target_time <= GLOBAL.current_tick:
+            self.paused_ticks = 0
+        
+        return GLOBAL.current_tick, self.target_time
+
 # PLAYER CLASS 
 class Player_space_ship(pygame.sprite.Sprite):
     def __init__(self, pos, img):
@@ -419,6 +483,7 @@ class Player_space_ship(pygame.sprite.Sprite):
         self.display_shield = False
         self.bubble_img = gen_func.get_image("Assets","Bubble.png", (0,0))
         self.shield_rect = self.bubble_img.get_rect(center = (self.pos[0],self.pos[1]))
+        self.shield_timer = Timer()
         
         self.thruster_imgs = [gen_func.get_image("Assets","thrusterFire-frame0.png", (0,0)),
                               gen_func.get_image("Assets","thrusterFire-frame1.png", (0,0)),
@@ -438,22 +503,23 @@ class Player_space_ship(pygame.sprite.Sprite):
         self.LAZER_COOLDOWNS = [8, 4, 20, 9, 10, 5]
         self.lazer_cooldown = self.LAZER_COOLDOWNS[0]
         self.shoot_start_time = -1
+        self.lazer_timer = Timer()
     
     def update(self, key_butns):
         # Move the ship as long as it has velocity
-        self.pos[0] += ((GLOBAL.scroll_spd + self.MV_SPD) * self.velocity)
-        self.image = pygame.transform.rotate(self.orignial_img, self.angle)
-        self.rect = self.image.get_rect(center = (self.pos[0],self.pos[1]))
-        self.shield_rect = self.bubble_img.get_rect(center = (self.pos[0],self.pos[1]))
+        if not GLOBAL.paused:
+            self.pos[0] += ((GLOBAL.scroll_spd + self.MV_SPD) * self.velocity)
+            self.image = pygame.transform.rotate(self.orignial_img, self.angle)
+            self.rect = self.image.get_rect(center = (self.pos[0],self.pos[1]))
+            self.shield_rect = self.bubble_img.get_rect(center = (self.pos[0],self.pos[1]))
         
-        # Loop through the thruster images
-        if self.fire_index < len(self.thruster_imgs) - 1:
-            self.fire_index += 1
-        else:
-            self.fire_index = 0
-        self.fire_image = pygame.transform.rotate(self.thruster_imgs[self.fire_index], self.angle)
-        self.fire_rect = self.fire_image.get_rect(midtop = (15*math.sin(math.radians(self.angle)) + self.pos[0],
-                                                            self.pos[1] + 5 + math.cos(math.radians(self.angle))))
+            # Loop through the thruster images
+            if self.fire_index < len(self.thruster_imgs) - 1:
+                self.fire_index += 1
+            else:
+                self.fire_index = 0
+            self.fire_image = pygame.transform.rotate(self.thruster_imgs[self.fire_index], self.angle)
+            self.fire_rect = self.fire_image.get_rect(midtop = (15*math.sin(math.radians(self.angle)) + self.pos[0], self.pos[1] + 5 + math.cos(math.radians(self.angle))))
         
         # When a change in health happens
         if self.latest_health != self.health and self.health > 0:
@@ -536,7 +602,7 @@ class Player_space_ship(pygame.sprite.Sprite):
         if self.lazer_cooldown > 0:
             self.shoot_start_time = gen_func.get_start_time(self.shoot_start_time)
             
-            current_time, target_time = gen_func.timer(self.shoot_start_time, COOLDOWN_TIME)
+            current_time, target_time = self.lazer_timer.start(self.shoot_start_time, COOLDOWN_TIME)
             
             if current_time >= target_time:
                 self.lazer_cooldown -= 1
@@ -544,7 +610,7 @@ class Player_space_ship(pygame.sprite.Sprite):
     
     def shield(self, on_time):
         self.shield_start_time = gen_func.get_start_time(self.shield_start_time)
-        current_time, target_time = gen_func.timer(self.shield_start_time, on_time)
+        current_time, target_time = self.shield_timer.start(self.shield_start_time, on_time)
         BLINK_TIME = target_time - 1000
         
         # The shield is done 
@@ -687,8 +753,9 @@ class Lazer(pygame.sprite.Sprite):
     
     def update(self):
         # Move with given speed
-        self.pos = [self.pos[0] + self.spd * (self.angle/30), self.pos[1] + self.spd]
-        self.image = pygame.transform.rotate(self.orignial_img, self.angle)
+        if not GLOBAL.paused:
+            self.pos = [self.pos[0] + self.spd * (self.angle/30), self.pos[1] + self.spd]
+            self.image = pygame.transform.rotate(self.orignial_img, self.angle)
         
         # Collision
         astroid_collision_value = self.check_collision(GLOBAL.astroids_group)
@@ -810,9 +877,10 @@ class Moving_text(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = (self.pos[0], self.pos[1]))
     
     def update(self):
-        # Move the text
-        self.pos[0] += self.spd[0]
-        self.pos[1] += self.spd[1]
+        if not GLOBAL.paused:
+            # Move the text
+            self.pos[0] += self.spd[0]
+            self.pos[1] += self.spd[1]
         
         self.rect = self.image.get_rect(center = (self.pos[0], self.pos[1]))
         
@@ -842,7 +910,8 @@ class Star(pygame.sprite.Sprite):
     
     def update(self):
         # Move with given speed
-        self.pos = [self.pos[0]+self.spd[0], self.pos[1]+self.spd[1]]
+        if not GLOBAL.paused:
+            self.pos = [self.pos[0]+self.spd[0], self.pos[1]+self.spd[1]]
         
         # If object moves out of screen
         if self.pos[1] > self.HEIGHT or self.pos[0] > self.WIDTH or self.pos[0] < 0:
@@ -893,9 +962,10 @@ class Planet(pygame.sprite.Sprite):
     
     def update(self):
         # Move with given speed
-        self.pos = [self.pos[0]+self.spd[0], self.pos[1]+self.spd[1]]
+        if not GLOBAL.paused:
+            self.pos = [self.pos[0]+self.spd[0], self.pos[1]+self.spd[1]]
         
-        self.angle += self.angle_spd
+            self.angle += self.angle_spd
         
         # rotate
         self.image = pygame.transform.rotate(self.orignial_img, self.angle)
@@ -956,11 +1026,12 @@ class Astroid(pygame.sprite.Sprite):
     
     def update(self):
         # Move with given speed
-        self.pos = [self.pos[0]+self.spd[0], self.pos[1]+self.spd[1]]
-        self.image = pygame.transform.rotate(self.orignial_img, self.angle)
+        if not GLOBAL.paused:
+            self.pos = [self.pos[0]+self.spd[0], self.pos[1]+self.spd[1]]
+            self.image = pygame.transform.rotate(self.orignial_img, self.angle)
         
-        # Rotate
-        self.angle += self.angleSpd
+            # Rotate
+            self.angle += self.angleSpd
         
         # Collision
         astroid_collision_value = self.check_collision(GLOBAL.astroids_group)
@@ -1093,23 +1164,26 @@ class Explosion(pygame.sprite.Sprite):
         
         self.start_time = pygame.time.get_ticks()
         self.image_index = 0
+        
+        self.timer = Timer()
     
     def update(self):
         # Move with given speed
-        self.pos = [self.pos[0]+self.spd[0], self.pos[1]+self.spd[1]]
+        if not GLOBAL.paused:
+            self.pos = [self.pos[0]+self.spd[0], self.pos[1]+self.spd[1]]
         
         timeSinceEnter = pygame.time.get_ticks() - self.start_time
-        #print(timeSinceEnter)
-        #print(self.image_index, len(self.images), len(self.orignial_imgs))
-        
+       
+        time = (self.image_index + 1) * 50
+        current_time, target_time = self.timer.start(self.start_time, time)
+
         if self.image_index < len(self.images) - 1:
             # Rotate
             self.image = pygame.transform.rotate(self.orignial_imgs[self.image_index], self.angle)
             
-            if (self.image_index + 1) * 5 <= timeSinceEnter:
+            if target_time <= current_time:
                 # Move to the next image
                 self.image_index += 1
-                self.start_time = pygame.time.get_ticks()
         # Destroy the object the animation has finished
         elif self.image_index >= len(self.images) - 1:
             self.kill()
@@ -1219,9 +1293,10 @@ class Item(pygame.sprite.Sprite):
     
     def update(self):
         # Move the text
-        self.pos[0] += self.spd[0]
-        self.pos[1] += self.spd[1]
-        self.angle += self.angle_spd
+        if not GLOBAL.paused:
+            self.pos[0] += self.spd[0]
+            self.pos[1] += self.spd[1]
+            self.angle += self.angle_spd
         
         self.image = pygame.transform.rotate(self.og_image, self.angle)
         self.rect = self.image.get_rect(center = (self.pos[0], self.pos[1]))

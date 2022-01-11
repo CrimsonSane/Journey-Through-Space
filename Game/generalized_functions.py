@@ -21,9 +21,9 @@ def get_start_time(start_time):
         start_time = GLOBAL.current_tick
     return start_time
 
-# Returns current time and the target time
-def timer(start_time, time):
-    current_time = GLOBAL.current_tick - GLOBAL.pause_ticks
+# Returns current time and the target time without the pausing
+def unpauseable_timer(start_time, time):
+    current_time = GLOBAL.current_tick
     target_time = start_time + time
     
     return current_time, target_time
