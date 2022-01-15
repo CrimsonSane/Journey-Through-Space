@@ -104,13 +104,12 @@ def main():
             reload_scene(player)
         elif GLOBAL.scene_strng == "GAME_SCENE":
             # Run game_scene
-            if GLOBAL.current_music == "":
-                GLOBAL.current_music = gen_func.play_random_music()
+            
+            
             game_scene(player_keys, game_objs_list, debug)
         elif GLOBAL.scene_strng == "PAUSE_SCENE" or GLOBAL.scene_strng == "GAME_SETTING_SCENE":
             # Run pause_scene
-            if GLOBAL.current_music == "":
-                GLOBAL.current_music = gen_func.play_random_music()
+            
             pause_scene(player_keys, game_objs_list, debug)
         elif GLOBAL.scene_strng == "GAME_OVER_SCENE":
             # Run game_over_scene
@@ -190,7 +189,7 @@ def pause_scene(user_inpt, obj_lst, debug):
     
     # Output objects:
     draw_objects(obj_lst, game_display)
-
+    
     if GLOBAL.scene_strng == "PAUSE_SCENE":
         MENUS[2].draw(game_display)
     elif GLOBAL.scene_strng == "GAME_SETTING_SCENE":
