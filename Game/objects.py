@@ -573,7 +573,7 @@ class Player_space_ship(pygame.sprite.Sprite):
         COOLDOWN_TIME = 10
         
         if self.lazer_cooldown > 0:
-            self.shoot_start_time = gen_func.get_start_time(self.shoot_start_time)
+            self.shoot_start_time = self.lazer_timer.get_start_time(self.shoot_start_time)
             
             current_time, target_time = self.lazer_timer.start(self.shoot_start_time, COOLDOWN_TIME)
             
@@ -582,7 +582,7 @@ class Player_space_ship(pygame.sprite.Sprite):
                 self.shoot_start_time = -1
     
     def shield(self, on_time):
-        self.shield_start_time = gen_func.get_start_time(self.shield_start_time)
+        self.shield_start_time = self.shield_timer.get_start_time(self.shield_start_time)
         current_time, target_time = self.shield_timer.start(self.shield_start_time, on_time)
         BLINK_TIME = target_time - 1000
         

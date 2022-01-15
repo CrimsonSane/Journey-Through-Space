@@ -83,7 +83,7 @@ def main():
         update_sound_vols()
         
         if GLOBAL.paused:
-            GLOBAL.pause_tick = gen_func.get_start_time(GLOBAL.pause_tick)
+            GLOBAL.pause_tick = zone_timer.get_start_time(GLOBAL.pause_tick)
         else:
             GLOBAL.pause_tick = -1
 
