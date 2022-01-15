@@ -244,6 +244,9 @@ class Menu():
         else:
             print("!!! ERROR MENU NAME IS INVALID !!!")
             self.menu_funcs = self.error_mnu
+        
+        self.menu_timer = Timer()
+        self.config_options = []
     
     def update(self, key_butns):
         if self.menu_name == "SETTINGS" or self.menu_name == "GAME_SETTINGS":
@@ -256,14 +259,37 @@ class Menu():
         
         if self.scroll_type == "UP_DOWN":
             if self.config:
-                if self.config_type == "SOUND" or self.config_type == "MUSIC":
-                    self.configure_vol(key_butns, self.config_type)
-                if self.config_type == "FULLSCREEN":
-                    self.configure_fullscreen(key_butns)
+                
+                BUTTON_TIME_COOLDOWN = 150
+                currnt_tme, targt_tme = self.menu_timer.unpauseable_start(self.but_press_time, BUTTON_TIME_COOLDOWN)
+                
                 if self.config_type == "RESOLUTION":
-                    self.configure_resolution(key_butns)
+                    self.config_options = GLOBAL.RESOLUTIONS[0]
+                    self.settings_object.resolution = [GLOBAL.RESOLUTIONS[0][self.config_index],GLOBAL.RESOLUTIONS[1][self.config_index]]
+                
+                # Move left and right to configure sound volume
+                if currnt_tme > targt_tme:
+                    if "LEFT" in key_butns:
+                        self.but_press_time = pygame.time.get_ticks()
+                        GLOBAL.menu_selection.play()
+                        self.configurate_option(-1)
+                        
+                        if self.config_index > 0:
+                            self.config_index -= 1
+                        else:
+                            self.config_index = len(self.config_options) - 1
+                        
+                    if "RIGHT" in key_butns:
+                        self.but_press_time = pygame.time.get_ticks()
+                        GLOBAL.menu_selection.play()
+                        self.configurate_option(1)
+                        
+                        if self.config_index < len(self.config_options) - 1:
+                            self.config_index += 1
+                        else:
+                            self.config_index = 0
             else:
-                currnt_tme, targt_tme = gen_func.unpauseable_timer(self.but_press_time, BUTTON_TIME_COOLDOWN)
+                currnt_tme, targt_tme = self.menu_timer.unpauseable_start(self.but_press_time, BUTTON_TIME_COOLDOWN)
                 
                 # Can hold the down key to cycle through options
                 if currnt_tme > targt_tme:
@@ -329,61 +355,15 @@ class Menu():
                     GLOBAL.scene_strng = self.menu_funcs[3][self.but_index]
                     self.but_index = 0
     
-    def configure_resolution(self, key_butns):
-        BUTTON_TIME_COOLDOWN = 150
-        currnt_tme, targt_tme = gen_func.unpauseable_timer(self.but_press_time, BUTTON_TIME_COOLDOWN)
-        
-        # Move left and right to configure sound volume
-        if currnt_tme > targt_tme:
-            if "LEFT" in key_butns:
-                self.but_press_time = pygame.time.get_ticks()
-                GLOBAL.menu_selection.play()
-                if self.config_index > 0:
-                    self.config_index -= 1
-                else:
-                    self.config_index = len(GLOBAL.RESOLUTIONS[0]) - 1
-                
-            if "RIGHT" in key_butns:
-                self.but_press_time = pygame.time.get_ticks()
-                GLOBAL.menu_selection.play()
-                if self.config_index < len(GLOBAL.RESOLUTIONS[0]) - 1:
-                    self.config_index += 1
-                else:
-                    self.config_index = 0
+    def configurate_option(self, movement):
+        if self.config_type == "SOUND" or self.config_type == "MUSIC":
+            if movement < 0:
+                self.settings_object.inc_dec_volume(-10, self.config_type)
+            elif movement > 0:
+                self.settings_object.inc_dec_volume(10, self.config_type)
             
-            self.settings_object.resolution = [GLOBAL.RESOLUTIONS[0][self.config_index],GLOBAL.RESOLUTIONS[1][self.config_index]]
-    
-    def configure_fullscreen(self, key_butns):
-        BUTTON_TIME_COOLDOWN = 150
-        currnt_tme, targt_tme = gen_func.unpauseable_timer(self.but_press_time, BUTTON_TIME_COOLDOWN)
-        
-        # Move left and right to configure fullscreen mode
-        if currnt_tme > targt_tme:
-            if "LEFT" in key_butns:
-                self.but_press_time = pygame.time.get_ticks()
-                GLOBAL.menu_selection.play()
-                self.settings_object.fullscreen = not self.settings_object.fullscreen
-                
-            if "RIGHT" in key_butns:
-                self.but_press_time = pygame.time.get_ticks()
-                GLOBAL.menu_selection.play()
-                self.settings_object.fullscreen = not self.settings_object.fullscreen
-    
-    def configure_vol(self, key_butns, vol_type):
-        BUTTON_TIME_COOLDOWN = 150
-        currnt_tme, targt_tme = gen_func.unpauseable_timer(self.but_press_time, BUTTON_TIME_COOLDOWN)
-        
-        # Move left and right to configure sound volume
-        if currnt_tme > targt_tme:
-            if "LEFT" in key_butns:
-                self.but_press_time = pygame.time.get_ticks()
-                GLOBAL.menu_selection.play()
-                self.settings_object.inc_dec_volume(-10, vol_type)
-                
-            if "RIGHT" in key_butns:
-                self.but_press_time = pygame.time.get_ticks()
-                GLOBAL.menu_selection.play()
-                self.settings_object.inc_dec_volume(10, vol_type)
+        elif self.config_type == "FULLSCREEN":
+            self.settings_object.fullscreen = not self.settings_object.fullscreen
     
     def draw(self, disply):
         for butn_index in range(len(self.menu_funcs[0])):
