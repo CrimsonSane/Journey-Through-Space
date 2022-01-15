@@ -15,19 +15,6 @@ def get_image(folder, img_nme, scle):
 def get_font(size):
     return pygame.font.Font(os.path.join('Assets','Computer Speak v0.3.ttf'),size)
 
-# Returns a start time that doesn't update during a loop
-def get_start_time(start_time):
-    if start_time < 0:
-        start_time = GLOBAL.current_tick
-    return start_time
-
-# Returns current time and the target time without the pausing
-def unpauseable_timer(start_time, time):
-    current_time = GLOBAL.current_tick
-    target_time = start_time + time
-    
-    return current_time, target_time
-
 # Creates moving text that displays the zone number
 def create_zone_text():
     objects.Moving_text("ZONE:"+str(GLOBAL.zone_id), [GLOBAL.WIN_WIDTH/2,-10],
