@@ -191,8 +191,10 @@ def pause_scene(user_inpt, obj_lst, debug):
     draw_objects(obj_lst, game_display)
     
     if GLOBAL.scene_strng == "PAUSE_SCENE":
+        pygame.draw.rect(game_display, (0,0,0), pygame.Rect(GLOBAL.WIN_WIDTH/3,GLOBAL.WIN_HEIGHT/3,400,300))
         MENUS[2].draw(game_display)
     elif GLOBAL.scene_strng == "GAME_SETTING_SCENE":
+        pygame.draw.rect(game_display, (0,0,0), pygame.Rect(GLOBAL.WIN_WIDTH/4,0,600,500))
         MENUS[3].draw(game_display)
 
     display_health(plyer.health, game_display)
