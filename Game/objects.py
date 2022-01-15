@@ -403,7 +403,8 @@ class Timer():
     def __init__(self):
         self.paused_ticks = 0
         self.target_time = 0
-
+    
+    # Returns current time and the target time with the pausing
     def start(self, start_time, time):
         self.target_time = start_time + time + self.paused_ticks
         
@@ -413,6 +414,19 @@ class Timer():
             self.paused_ticks = 0
         
         return GLOBAL.current_tick, self.target_time
+    
+    # Returns a start time that doesn't update during a loop
+    def get_start_time(self, start_time):
+        if start_time < 0:
+            start_time = GLOBAL.current_tick
+        return start_time
+
+    # Returns current time and the target time without the pausing
+    def unpauseable_start(self, start_time, time):
+        current_time = GLOBAL.current_tick
+        target_time = start_time + time
+        
+        return current_time, target_time
 
 # PLAYER CLASS 
 class Player_space_ship(pygame.sprite.Sprite):
