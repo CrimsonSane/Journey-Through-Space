@@ -479,6 +479,33 @@ class Player_space_ship(pygame.sprite.Sprite):
                 self.fire_index = 0
             self.fire_image = pygame.transform.rotate(self.thruster_imgs[self.fire_index], self.angle)
             self.fire_rect = self.fire_image.get_rect(midtop = (15*math.sin(math.radians(self.angle)) + self.pos[0], self.pos[1] + 5 + math.cos(math.radians(self.angle))))
+            
+            # if player isn't dead
+            if self.health > 0:
+                # Shoot weapon
+                if "SHOOT" in key_butns:
+                    self.shoot()
+                
+                # Change velocity and angle based off of key_buttons
+                if "LEFT" in key_butns:
+                    if self.velocity > -1 and self.pos[0] > 0:
+                        self.velocity = round(self.velocity,1) - 0.1
+                    
+                    elif self.pos[0] <= 0:
+                        self.velocity = 0
+                        
+                    if self.angle < 45:
+                        self.angle += self.AGLE_SPD
+                    
+                if "RIGHT" in key_butns:
+                    if self.velocity < 1 and self.pos[0] < self.WIDTH:
+                        self.velocity = round(self.velocity,1) + 0.1
+                    
+                    elif self.pos[0] >= self.WIDTH:
+                        self.velocity = 0
+                    
+                    if self.angle > -45:
+                        self.angle -= self.AGLE_SPD
         
         # When a change in health happens
         if self.latest_health != self.health and self.health > 0:
@@ -496,33 +523,6 @@ class Player_space_ship(pygame.sprite.Sprite):
             self.pos = [int(GLOBAL.WIN_WIDTH/2),GLOBAL.WIN_HEIGHT -100]
         
         self.lazer_cooldown_setup()
-        
-        # if player isn't dead
-        if self.health > 0:
-            # Shoot weapon
-            if "SHOOT" in key_butns:
-                self.shoot()
-            
-            # Change velocity and angle based off of key_buttons
-            if "LEFT" in key_butns:
-                if self.velocity > -1 and self.pos[0] > 0:
-                    self.velocity = round(self.velocity,1) - 0.1
-                
-                elif self.pos[0] <= 0:
-                    self.velocity = 0
-                    
-                if self.angle < 45:
-                    self.angle += self.AGLE_SPD
-                
-            if "RIGHT" in key_butns:
-                if self.velocity < 1 and self.pos[0] < self.WIDTH:
-                    self.velocity = round(self.velocity,1) + 0.1
-                
-                elif self.pos[0] >= self.WIDTH:
-                    self.velocity = 0
-                
-                if self.angle > -45:
-                    self.angle -= self.AGLE_SPD
         
         # If not moving change velocity back to ZERO
         if not "LEFT" in key_butns and not "RIGHT" in key_butns:
