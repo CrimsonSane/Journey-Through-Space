@@ -1010,7 +1010,7 @@ class Astroid(pygame.sprite.Sprite):
         astroid_collision_value = self.check_collision(GLOBAL.astroids_group)
         if astroid_collision_value != -1:
             # Trys to split both objects if in screen
-            if self.pos[1] < 0:
+            if self.pos[1] < -100:
                 self.regen()
                 GLOBAL.astroids_group.sprites()[astroid_collision_value].regen()
             else:

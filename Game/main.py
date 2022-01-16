@@ -181,6 +181,8 @@ def pause_scene(user_inpt, obj_lst, debug):
     
     # Process user input:
     update_objects(obj_lst, user_inpt)
+    
+    zone_updater()
 
     if "PAUSE" in user_inpt:
         GLOBAL.paused = False
@@ -225,6 +227,7 @@ def reload_scene(plyer):
     plyer.latest_health = plyer.health
     plyer.display_player = True
     plyer.lazer_type = "PLAYER_NORM_LAZER"
+    plyer.lazer_cooldown = plyer.LAZER_COOLDOWNS[0]
     plyer.pos[0] = int(GLOBAL.WIN_WIDTH/2)
 
     GLOBAL.astroids_group.empty()
