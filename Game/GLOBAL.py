@@ -49,7 +49,8 @@ pause_tick = 0
 MUSIC_TRACKS = [os.path.join("Assets", "Gaze Upon the Stars.wav"),
                 os.path.join("Assets", "Nebulus.wav"),
                 os.path.join("Assets", "Cosmic Glory.wav"),
-                os.path.join("Assets", "Dead Space.wav")]
+                os.path.join("Assets", "Dead Space.wav"),
+                os.path.join("Assets", "Travel The Galaxy.wav")]
 
 # Initalize current music as the title song
 current_music = MUSIC_TRACKS[0]
