@@ -109,7 +109,7 @@ def play_sound(sound, mixer):
 def play_music(music):
     if not pygame.mixer.music.get_busy() or GLOBAL.current_music != music:
         pygame.mixer.music.load(music)
-        pygame.mixer.music.play()
+        pygame.mixer.music.play(loops= -1)
     
     return music
 
