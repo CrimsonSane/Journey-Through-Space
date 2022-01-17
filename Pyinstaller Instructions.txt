@@ -6,7 +6,8 @@ Check requirements.txt for all the game's dependencies and of course you would n
 
 Here is a list of those locations according to the pyinstaller docs:
 
-- Windows: C:\PythonXY\Scripts where XY stands for the major and minor Python version number, for example C:\Python34\Scripts for Python 3.4)
+- Windows: C:\Users\username\AppData\Local\Programs\Python\PythonXY\Scripts where XY stands for the major and minor Python version number, 
+for example C:\Users\username\AppData\Local\Programs\Python\Python34\Scripts for Python 3.4)
 - GNU/Linux: /usr/bin/ or /home/[username]/.local/bin
 - OS X (using the default Apple-supplied Python) /usr/bin
 - OS X (using Python installed by homebrew) /usr/local/bin
