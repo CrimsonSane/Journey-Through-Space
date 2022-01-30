@@ -26,6 +26,8 @@ class Setting():
         self.move_down = [pygame.K_s,pygame.K_DOWN]
         self.shoot = [pygame.K_j,pygame.K_RETURN]
         self.pause = [pygame.K_p,pygame.K_ESCAPE]
+        
+        self.enable_tooltip = True
     
     def inc_dec_volume(self, value, vol_type):
         if vol_type == "SOUND":
@@ -202,10 +204,10 @@ class Menu():
                              "FULLSCREEN: "+str(self.settings_object.fullscreen),
                              "RESOLUTION: "+str(self.settings_object.resolution),
                              "BACK"],
-                            [(self.WIDTH/2,150),
-                             (self.WIDTH/2,220),
-                             (self.WIDTH/2,290),
-                             (self.WIDTH/2,360),
+                            [(self.WIDTH/2,250),
+                             (self.WIDTH/2,320),
+                             (self.WIDTH/2,390),
+                             (self.WIDTH/2,460),
                              (self.WIDTH/2, self.HEIGHT - 50)],
                             [46,
                              46,

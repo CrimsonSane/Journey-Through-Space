@@ -193,11 +193,15 @@ def pause_scene(user_inpt, obj_lst, debug):
     draw_objects(obj_lst, game_display)
     
     if GLOBAL.scene_strng == "PAUSE_SCENE":
-        pygame.draw.rect(game_display, (0,0,0), pygame.Rect(GLOBAL.WIN_WIDTH/3,GLOBAL.WIN_HEIGHT/3,400,300))
+        pygame.draw.rect(game_display, (0,0,0), pygame.Rect(GLOBAL.WIN_WIDTH/3,(GLOBAL.WIN_HEIGHT/3) -100,400,400))
         MENUS[2].draw(game_display)
+        scene_title = gen_func.get_font(69).render("PAUSED",1,(255,255,255))
+        game_display.blit(scene_title, scene_title.get_rect(center = (int(GLOBAL.WIN_WIDTH / 2),255)))
     elif GLOBAL.scene_strng == "GAME_SETTING_SCENE":
-        pygame.draw.rect(game_display, (0,0,0), pygame.Rect(GLOBAL.WIN_WIDTH/4,0,600,500))
+        pygame.draw.rect(game_display, (0,0,0), pygame.Rect(GLOBAL.WIN_WIDTH/4,0,600,700))
         MENUS[3].draw(game_display)
+        scene_title = gen_func.get_font(69).render("SETTINGS",1,(255,255,255))
+        game_display.blit(scene_title, scene_title.get_rect(center = (int(GLOBAL.WIN_WIDTH / 2),105)))
 
     display_health(plyer.health, game_display)
     score_txt = gen_func.get_font(36).render("Score: {:,}".format(GLOBAL.score),1,(255,255,255))
@@ -286,6 +290,8 @@ def game_scene(user_inpt, obj_lst, debug):
     # Output objects:
     draw_objects(obj_lst, game_display)
     display_health(plyer.health, game_display)
+    tool_txt = gen_func.get_font(22).render("Press A, D or arrow keys to move. Press J or enter to shoot",1,(255,255,255))
+    game_display.blit(tool_txt, tool_txt.get_rect(center = (int(GLOBAL.WIN_WIDTH/2),GLOBAL.WIN_HEIGHT - 22)))
     score_txt = gen_func.get_font(36).render("Score: {:,}".format(GLOBAL.score),1,(255,255,255))
     game_display.blit(score_txt, score_txt.get_rect(center = (int(GLOBAL.WIN_WIDTH/2),36)))
     display_gun(plyer, game_display)
@@ -332,8 +338,10 @@ def game_over_scene(user_inpt, obj_lst, debug):
     # Output objects:
     draw_objects(obj_lst, game_display)
     MENUS[4].draw(game_display)
-    score_txt = gen_func.get_font(36).render("Score: {:,}".format(GLOBAL.score),1,(255,255,255))
-    game_display.blit(score_txt, score_txt.get_rect(center = (int(GLOBAL.WIN_WIDTH/2),36)))
+    score_txt = gen_func.get_font(36).render("Your score: {:,}".format(GLOBAL.score),1,(255,255,255))
+    game_display.blit(score_txt, score_txt.get_rect(center = (int(GLOBAL.WIN_WIDTH/2),(GLOBAL.WIN_HEIGHT/2)-110)))
+    scene_title = gen_func.get_font(96).render("YOU DIED",1,(255,255,255))
+    game_display.blit(scene_title, scene_title.get_rect(center = (int(GLOBAL.WIN_WIDTH / 2),(GLOBAL.WIN_HEIGHT/2)-215)))
     draw_debug_screen(debug, plyer, game_display)
 
 def update_sound_vols():
@@ -358,6 +366,10 @@ def settings_scene(user_inpt, obj_lst):
     # Output objects:
     draw_objects(obj_lst, game_display)
     MENUS[1].draw(game_display)
+    
+    scene_title = gen_func.get_font(69).render("SETTINGS",1,(255,255,255))
+    game_display.blit(scene_title, scene_title.get_rect(center = (int(GLOBAL.WIN_WIDTH / 2),105)))
+    
     display_version()
 
 def main_scene(user_inpt, obj_lst, debug):
