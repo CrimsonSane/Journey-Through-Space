@@ -63,8 +63,8 @@ def main():
     # Lists containing objects to update and draw
     menu_objs_list = [GLOBAL.stars_group, GLOBAL.planet_group]
     
-    game_objs_list = [GLOBAL.stars_group, GLOBAL.planet_group, player, GLOBAL.lazer_group, GLOBAL.astroids_group, GLOBAL.explosion_group,
-                      GLOBAL.item_group, GLOBAL.mving_txt_group]
+    game_objs_list = [GLOBAL.stars_group, GLOBAL.planet_group, player, GLOBAL.lazer_group, GLOBAL.astroids_group,
+                      GLOBAL.scraps_group, GLOBAL.explosion_group, GLOBAL.item_group, GLOBAL.mving_txt_group]
     
     running = True
     
@@ -231,6 +231,7 @@ def reload_scene(plyer):
     plyer.pos[0] = int(GLOBAL.WIN_WIDTH/2)
 
     GLOBAL.astroids_group.empty()
+    GLOBAL.scraps_group.empty()
     GLOBAL.mving_txt_group.empty()
     GLOBAL.lazer_group.empty()
     gen_func.create_astroids(GLOBAL.ZONE_VALUES[1][1], GLOBAL.astroids_group)

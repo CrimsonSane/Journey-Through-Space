@@ -21,6 +21,7 @@ EXPLOSION_CHANNEL = 3
 player_group = pygame.sprite.Group()
 stars_group = pygame.sprite.Group()
 astroids_group = pygame.sprite.Group()
+scraps_group = pygame.sprite.Group()
 lazer_group = pygame.sprite.Group()
 explosion_group = pygame.sprite.Group()
 planet_group = pygame.sprite.Group()
@@ -35,8 +36,10 @@ current_tick = 0 # Initial value
 
 # First list is scroll speed
 # Second list is astroid amount
-ZONE_VALUES = [[1,2,3,4,4,4],
-               [0,5,7,10,12,15]]
+# Third list is scrap amount
+ZONE_VALUES = [[1,2,2,3,3,4,4],
+               [0,5,3,5,6,8,12],
+               [0,0,5,5,10,12,12]]
 ASTROID_SCORE_AMTS = [0,5,10,15,25,50,100]
 score = 0
 zone_id = 1

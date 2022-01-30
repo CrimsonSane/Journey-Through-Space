@@ -58,6 +58,19 @@ def create_astroids(amount, group):
                           get_image("Assets","P6-Astroid4.png",(0,0))]],
                         group=group, spd_rng=[0,0, 1,4])
 
+# Creates amount of scrap from passed argument
+def create_scrap(amount, group):
+    for i in range(amount):
+        objects.Scrap(pos=[random.randint(0,GLOBAL.WIN_WIDTH),random.randint(-GLOBAL.WIN_HEIGHT,0)],
+                        imgs=[[get_image("Assets","P1-Scrap1.png",(0,0)),
+                               get_image("Assets","P1-Scrap2.png",(0,0)),
+                               get_image("Assets","P1-Scrap3.png",(0,0)),
+                               get_image("Assets","P1-Scrap4.png",(0,0))],
+                              [get_image("Assets","P2-Scrap1.png",(0,0)),
+                               get_image("Assets","P2-Scrap2.png",(0,0)),
+                               get_image("Assets","P2-Scrap3.png",(0,0))]],
+                      group=group, spd_rng=[-2,2, 1,4])
+
 # Adds or removes astroids based off of given amount whether it is negative or positive
 def add_or_remove_astroids(amount, group):
     try:
@@ -74,6 +87,23 @@ def add_or_remove_astroids(amount, group):
         create_astroids(amount, group)
     except:
         print("There are:", len(group), "Astroids")
+
+# Adds or removes scrap based off of given amount whether it is negative or positive
+def add_or_remove_scrap(amount, group):
+    try:
+        for scrap in group:
+            if amount < 0:
+                for i in range(abs(amount)):
+                    if scrap.pos[1] < 0:
+                        scrap.kill()
+            elif amount == 0:
+                if scrap.pos[1] < 0:
+                    scrap.kill()
+                    print("Scrap killed")
+        
+        create_scrap(amount, group)
+    except:
+        print("There are:", len(group), "Scrap")
 
 # Returns an integer after searching a list for a value
 def get_index_frm_2d_list(lst, elems):
