@@ -554,6 +554,22 @@ class Player_space_ship(pygame.sprite.Sprite):
             elif self.angle < 0:
                 self.angle += self.AGLE_SPD
         
+        # Scrap collision
+        scrap_collision_value = self.check_collision(GLOBAL.scraps_group)
+        if scrap_collision_value != -1:
+            if len(GLOBAL.scraps_group) != 0:
+                GLOBAL.scraps_group.sprites()[scrap_collision_value].regen()
+            # If the latest health is equal to current health
+            if self.latest_health == self.health:
+                
+                # If the player is not protected
+                if not self.shield_bool:
+                    self.health -= 1
+                    gen_func.play_sound(GLOBAL.player_hit, GLOBAL.PLAYER_CHANNEL)
+                else:
+                    # It plays a lazer sound if the astroid hits while the player has a shield
+                    gen_func.play_sound(GLOBAL.lazer_hit, GLOBAL.LAZER_CHANNEL)
+        
         # Astroid collision
         astroid_collision_value = self.check_collision(GLOBAL.astroids_group)
         if astroid_collision_value != -1:
@@ -577,7 +593,7 @@ class Player_space_ship(pygame.sprite.Sprite):
         if self.lazer_cooldown > 0:
             self.shoot_start_time = self.lazer_timer.get_start_time(self.shoot_start_time)
             
-            current_time, target_time = self.lazer_timer.start(self.shoot_start_time, COOLDOWN_TIME)
+            current_time, target_time = self.lazer_timer.start(self.shoot_start_time, COOLDOWN_TIME, True)
             
             if current_time >= target_time:
                 self.lazer_cooldown -= 1
@@ -585,7 +601,7 @@ class Player_space_ship(pygame.sprite.Sprite):
     
     def shield(self, on_time):
         self.shield_start_time = self.shield_timer.get_start_time(self.shield_start_time)
-        current_time, target_time = self.shield_timer.start(self.shield_start_time, on_time)
+        current_time, target_time = self.shield_timer.start(self.shield_start_time, on_time, True)
         BLINK_TIME = target_time - 1000
         
         # The shield is done 
@@ -630,7 +646,7 @@ class Player_space_ship(pygame.sprite.Sprite):
             
             if self.lazer_cooldown <= 0:
                 Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-7, angle=self.angle,
-                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
                 self.lazer_cooldown = self.LAZER_COOLDOWNS[2]
                 gen_func.play_sound(GLOBAL.lazer_cannon_shooting, GLOBAL.LAZER_CHANNEL)
         # Split fire player lazer
@@ -638,9 +654,9 @@ class Player_space_ship(pygame.sprite.Sprite):
             
             if self.lazer_cooldown <= 0:
                 Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-7, angle=self.angle,
-                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
                 Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-7, angle=self.angle,
-                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
                 self.lazer_cooldown = self.LAZER_COOLDOWNS[3]
                 gen_func.play_sound(GLOBAL.lazer_shooting, GLOBAL.LAZER_CHANNEL)
         # Pierce fire player lazer
@@ -648,9 +664,9 @@ class Player_space_ship(pygame.sprite.Sprite):
             
             if self.lazer_cooldown <= 0:
                 Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-11, angle=self.angle,
-                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
                 Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-11, angle=self.angle,
-                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
                 self.lazer_cooldown = self.LAZER_COOLDOWNS[4]
                 gen_func.play_sound(GLOBAL.lazer_shooting, GLOBAL.LAZER_CHANNEL)
         # Spread fire player lazer
@@ -695,11 +711,12 @@ class Player_space_ship(pygame.sprite.Sprite):
 
 # LAZER CLASS
 class Lazer(pygame.sprite.Sprite):
-    def __init__(self, pos, group, lazer_type="PLAYER_NORM_LAZER", spd=-1, angle=0):
+    def __init__(self, pos, group, lazer_type="PLAYER_NORM_LAZER", spd=-1, angle=0, destry_scrap=False):
         super().__init__()
         group.add(self)
         
         self.lazer_type = lazer_type
+        self.can_destroy_scrap = destry_scrap
         
         self.WIDTH = GLOBAL.WIN_WIDTH
         self.HEIGHT = GLOBAL.WIN_HEIGHT
@@ -732,6 +749,74 @@ class Lazer(pygame.sprite.Sprite):
         if not GLOBAL.paused:
             self.pos = [self.pos[0] + self.spd * (self.angle/30), self.pos[1] + self.spd]
             self.image = pygame.transform.rotate(self.orignial_img, self.angle)
+        
+        # Scrap collision
+        scrap_collision_value = self.check_collision(GLOBAL.scraps_group)
+        if scrap_collision_value != -1:
+            CURRENT_SPD = [self.spd * (self.angle/30), self.spd]
+            
+            if self.can_destroy_scrap:
+                if self.lazer_type == "PLAYER_CANNON_LAZER":
+                    EXPLOSION_SIZE = 3
+                    
+                    # If is not on screen
+                    if self.pos[1] < 0:
+                        GLOBAL.scraps_group.sprites()[scrap_collision_value].regen()
+                        if self.explosion == 0:
+                            self.explosion = 1
+                            gen_func.play_sound(GLOBAL.lazer_cannon_hit, GLOBAL.EXPLOSION_CHANNEL)
+                            Explosion(CURRENT_SPD, GLOBAL.explosion_group, [2,2, EXPLOSION_SIZE,EXPLOSION_SIZE], self.pos, True)
+                        self.kill()
+                    else:
+                        # Add and display points
+                        GLOBAL.score += GLOBAL.SCRAP_SCORE_AMTS[GLOBAL.scraps_group.sprites()[scrap_collision_value].pts]
+                        Moving_text(str(GLOBAL.SCRAP_SCORE_AMTS[GLOBAL.scraps_group.sprites()[scrap_collision_value].pts]),
+                                    self.pos, [0,-self.spd], GLOBAL.mving_txt_group)
+                        
+                        GLOBAL.scraps_group.sprites()[scrap_collision_value].regen()
+                        if self.explosion == 0:
+                            self.explosion = 1
+                            gen_func.play_sound(GLOBAL.lazer_cannon_hit, GLOBAL.EXPLOSION_CHANNEL)
+                            Explosion(CURRENT_SPD, GLOBAL.explosion_group, [2,2, EXPLOSION_SIZE,EXPLOSION_SIZE], self.pos, True)
+                        self.kill()
+                elif self.lazer_type == "PLAYER_PIERCE_LAZER":
+                    PIERCE_MAX = 2
+                    # If is not on screen
+                    if self.pos[1] < 0:
+                        GLOBAL.scraps_group.sprites()[scrap_collision_value].regen()
+                        gen_func.play_sound(GLOBAL.lazer_hit, GLOBAL.LAZER_HIT_CHANNEL)
+                        self.kill()
+                    elif self.hits >= PIERCE_MAX:
+                        self.kill()
+                    else:
+                        # Add and display points
+                        GLOBAL.score += GLOBAL.SCRAP_SCORE_AMTS[GLOBAL.scraps_group.sprites()[scrap_collision_value].pts]
+                        Moving_text(str(GLOBAL.SCRAP_SCORE_AMTS[GLOBAL.scraps_group.sprites()[scrap_collision_value].pts]),
+                                    self.pos, [0,-self.spd], GLOBAL.mving_txt_group)
+                        
+                        GLOBAL.scraps_group.sprites()[scrap_collision_value].regen()
+                        gen_func.play_sound(GLOBAL.lazer_hit, GLOBAL.LAZER_HIT_CHANNEL)
+                        self.hits += 1
+                else:
+                    # If is not on screen
+                    if self.pos[1] < 0:
+                        GLOBAL.scraps_group.sprites()[scrap_collision_value].regen()
+                        gen_func.play_sound(GLOBAL.lazer_hit, GLOBAL.LAZER_HIT_CHANNEL)
+                        self.kill()
+                    else:
+                        # Add and display points
+                        GLOBAL.score += GLOBAL.SCRAP_SCORE_AMTS[GLOBAL.scraps_group.sprites()[scrap_collision_value].pts]
+                        Moving_text(str(GLOBAL.SCRAP_SCORE_AMTS[GLOBAL.scraps_group.sprites()[scrap_collision_value].pts]),
+                                    self.pos, [0,-self.spd], GLOBAL.mving_txt_group)
+                        
+                        GLOBAL.scraps_group.sprites()[scrap_collision_value].regen()
+                        gen_func.play_sound(GLOBAL.lazer_hit, GLOBAL.LAZER_HIT_CHANNEL)
+                        self.kill()
+            else:
+                scrap_spd = GLOBAL.scraps_group.sprites()[scrap_collision_value].spd
+                gen_func.play_sound(GLOBAL.lazer_hit, GLOBAL.LAZER_HIT_CHANNEL)
+                Explosion(scrap_spd, GLOBAL.explosion_group, [0.1,0.1, 0.1,0.1], self.pos)
+                self.kill()
         
         # Collision
         astroid_collision_value = self.check_collision(GLOBAL.astroids_group)
