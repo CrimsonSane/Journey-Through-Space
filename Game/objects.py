@@ -681,7 +681,8 @@ class Player_space_ship(pygame.sprite.Sprite):
             else:
                 return -1
         except:
-            print("There are no objects to collide with")
+            if len(group) == 0:
+                return -1
     
     def draw(self, disply):
         if self.display_player:
@@ -831,7 +832,8 @@ class Lazer(pygame.sprite.Sprite):
             else:
                 return -1
         except:
-            print("There are no objects to collide with")
+            if len(group) == 0:
+                return -1
     
     def draw(self, disply):
         disply.blit(self.image, self.rect)
@@ -1035,7 +1037,8 @@ class Astroid(pygame.sprite.Sprite):
             else:
                 return -1
         except:
-            print("There are no objects to collide with")
+            if len(group) == 0:
+                return -1
     
     def regen(self):
         if self.is_astroid:
@@ -1303,7 +1306,8 @@ class Explosion(pygame.sprite.Sprite):
             else:
                 return -1
         except:
-            print("There are no objects to collide with")
+            if len(group) == 0:
+                return -1
     
     def draw(self, disply):
         disply.blit(self.image, self.rect)
@@ -1441,7 +1445,8 @@ class Item(pygame.sprite.Sprite):
             else:
                 return -1
         except:
-            print("There are no objects to collide with")
+            if len(group) == 0:
+                return -1
     
     def draw(self, disply):
         disply.blit(self.image, self.rect)
