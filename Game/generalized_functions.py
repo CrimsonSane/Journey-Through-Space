@@ -161,13 +161,19 @@ def play_random_music():
 
 # Creates items when certain conditions are met
 def create_items():
-    ran_nums = [random.randint(1,4), random.randint(1,8)]
     ITEM_NAMES = ["HAMMER", "NORMAL_GUN", "RAPID_GUN", "CANNON_GUN", "SPLIT_GUN", "PIERCE_GUN", "SPREAD_GUN"]
-    ran_item = random.randint(0,len(ITEM_NAMES)-1)
-    SPAWN_INTERVAL = 500
+    ITEM_CHANCES = [(1,10), (1,20), (1,20), (1,20), (1,20), (1,20), (1,20)]
+    ran_item_index = random.randint(0, len(ITEM_NAMES) - 1)
+    SPAWN_INTERVAL = 15
     
     #print(round(GLOBAL.current_tick/SPAWN_INTERVAL,2), round(GLOBAL.current_tick/SPAWN_INTERVAL,2).is_integer())
     if round(GLOBAL.current_tick/SPAWN_INTERVAL,2).is_integer():
-        if ran_nums[0] == ran_nums[1]:
-            objects.Item(ITEM_NAMES[ran_item], [random.randint(0,GLOBAL.WIN_WIDTH),random.randint(-GLOBAL.WIN_HEIGHT,0)],
+        # Grab the item's chances and determine if it can spawn
+        chance_target = ITEM_CHANCES[ran_item_index][0]
+        chance_amount = ITEM_CHANCES[ran_item_index][1]
+        
+        chance = random.randint(1,chance_amount)
+        
+        if chance <= chance_target:
+            objects.Item(ITEM_NAMES[ran_item_index], [random.randint(0,GLOBAL.WIN_WIDTH),random.randint(-GLOBAL.WIN_HEIGHT,0)],
                          [0,6], GLOBAL.item_group)

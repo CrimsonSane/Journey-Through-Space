@@ -238,6 +238,7 @@ def reload_scene(plyer):
     GLOBAL.scraps_group.empty()
     GLOBAL.mving_txt_group.empty()
     GLOBAL.lazer_group.empty()
+    GLOBAL.item_group.empty()
     gen_func.create_astroids(GLOBAL.ZONE_VALUES[1][1], GLOBAL.astroids_group)
     GLOBAL.start_game_ticks = GLOBAL.current_tick
     GLOBAL.score = 0
