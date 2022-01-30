@@ -1363,7 +1363,7 @@ class Explosion(pygame.sprite.Sprite):
                         gen_func.get_image("Assets","Explosion-frame-3.png",(size[0]*44,size[1]*44)),
                         gen_func.get_image("Assets","Explosion-frame-4.png",(size[0]*54,size[1]*54)),
                         gen_func.get_image("Assets","Explosion-final-frame.png",(size[0]*64,size[1]*64)),
-                        gen_func.get_image("Assets","Explosion-final-frame.png",(size[0]*0,size[1]*0)),
+                        gen_func.get_image("Assets","Explosion-final-frame.png",(size[0],size[1])),
                         gen_func.get_image("Assets","Explosion-frame-6.png",(size[2]*66,size[3]*66)),
                         gen_func.get_image("Assets","Explosion-frame-7.png",(size[2]*76,size[3]*76)),
                         gen_func.get_image("Assets","Explosion-frame-8.png",(size[2]*86,size[3]*86)),
