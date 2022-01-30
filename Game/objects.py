@@ -469,6 +469,18 @@ class Timer():
 
     # Returns current time and the target time without the pausing
     def unpauseable_start(self, start_time, time):
+        """
+        The chad OG unpauseable timer    VS. The virgin difficult-to-implement pausable timer
+                                          |
+                     _O_/ Easy to         | A huge pain      _O     relies on GLOBAL.paused existance.
+ Doesn't depend on  / |   understand.     | In the ass to   //|
+ GLOBAL.paused     __/ \                  | set up.       __/\      I fixed the bug! no wait, 
+                        \ Literally one   |                   \     I'm back where I started.
+                          function.       |       needs to calculate the pause time.
+        
+        
+        Hope you enjoyed this waste of time!
+        """
         current_time = GLOBAL.current_tick
         target_time = start_time + time
         
