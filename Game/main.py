@@ -81,11 +81,6 @@ def main():
         
         set_window_display()
         update_sound_vols()
-        
-        if GLOBAL.paused:
-            GLOBAL.pause_tick = zone_timer.get_start_time(GLOBAL.pause_tick)
-        else:
-            GLOBAL.pause_tick = -1
 
         if GLOBAL.scene_strng == "MAIN_SCENE":
             # Run main_scene
@@ -251,19 +246,26 @@ def zone_updater():
     ZONE_CHANGE_TIME = 120000
     cur_time, tar_time = zone_timer.start(GLOBAL.start_game_ticks, ZONE_CHANGE_TIME * GLOBAL.zone_id)
     
+    #print(cur_time, tar_time, "Paused Tick:", zone_timer.paused_tick)
+    
+    
     if cur_time >= tar_time:
-        if GLOBAL.zone_id < 5:
+        # Determines if the zone will do additional actions
+        if GLOBAL.zone_id < len(GLOBAL.ZONE_VALUES[0]) - 1:
             GLOBAL.current_music = gen_func.play_random_music()
             GLOBAL.zone_id += 1
             
             GLOBAL.scroll_spd = GLOBAL.ZONE_VALUES[0][GLOBAL.zone_id]
             astroid_amt = GLOBAL.ZONE_VALUES[1][GLOBAL.zone_id] - GLOBAL.ZONE_VALUES[1][GLOBAL.zone_id - 1]
+            scrap_amt = GLOBAL.ZONE_VALUES[2][GLOBAL.zone_id] - GLOBAL.ZONE_VALUES[2][GLOBAL.zone_id - 1]
             
             gen_func.add_or_remove_astroids(astroid_amt, GLOBAL.astroids_group)
+            gen_func.add_or_remove_scrap(scrap_amt, GLOBAL.scraps_group)
             
             gen_func.create_zone_text()
-            #print(GLOBAL.zone_id)
+            print(GLOBAL.zone_id)
         else:
+            # Increase the zone there is no more values to add
             GLOBAL.current_music = gen_func.play_random_music()
             GLOBAL.zone_id += 1
 
