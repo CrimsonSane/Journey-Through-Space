@@ -15,6 +15,9 @@ import generalized_functions as gen_func
 
 FPS = 60
 
+if GLOBAL != 0:
+    random.seed(GLOBAL.SEED)
+
 pygame.font.init()
 pygame.init()
 
@@ -99,7 +102,6 @@ def main():
             reload_scene(player)
         elif GLOBAL.scene_strng == "GAME_SCENE":
             # Run game_scene
-            
             
             game_scene(player_keys, game_objs_list, debug)
         elif GLOBAL.scene_strng == "PAUSE_SCENE" or GLOBAL.scene_strng == "GAME_SETTING_SCENE":
@@ -223,6 +225,7 @@ def reload_scene(plyer):
     GLOBAL.scroll_spd = GLOBAL.ZONE_VALUES[0][1]
     
     plyer.health = 3
+    plyer.upgrade = 0
     plyer.latest_health = plyer.health
     plyer.display_player = True
     plyer.lazer_type = "PLAYER_NORM_LAZER"
@@ -248,7 +251,6 @@ def zone_updater():
     
     #print(cur_time, tar_time, "Paused Tick:", zone_timer.paused_tick)
     
-    
     if cur_time >= tar_time:
         # Determines if the zone will do additional actions
         if GLOBAL.zone_id < len(GLOBAL.ZONE_VALUES[0]) - 1:
@@ -263,7 +265,7 @@ def zone_updater():
             gen_func.add_or_remove_scrap(scrap_amt, GLOBAL.scraps_group)
             
             gen_func.create_zone_text()
-            print(GLOBAL.zone_id)
+            #print(GLOBAL.zone_id)
         else:
             # Increase the zone there is no more values to add
             GLOBAL.current_music = gen_func.play_random_music()
@@ -293,8 +295,10 @@ def game_scene(user_inpt, obj_lst, debug):
     # Output objects:
     draw_objects(obj_lst, game_display)
     display_health(plyer.health, game_display)
-    tool_txt = gen_func.get_font(22).render("Press A, D or arrow keys to move. Press J or enter to shoot",1,(255,255,255))
-    game_display.blit(tool_txt, tool_txt.get_rect(center = (int(GLOBAL.WIN_WIDTH/2),GLOBAL.WIN_HEIGHT - 22)))
+    display_upgrade_bar(plyer.upgrade, game_display)
+    
+    #tool_txt = gen_func.get_font(22).render("Press A, D or arrow keys to move. Press J or enter to shoot",1,(255,255,255))
+    #game_display.blit(tool_txt, tool_txt.get_rect(center = (int(GLOBAL.WIN_WIDTH/2),GLOBAL.WIN_HEIGHT - 22)))
     score_txt = gen_func.get_font(36).render("Score: {:,}".format(GLOBAL.score),1,(255,255,255))
     game_display.blit(score_txt, score_txt.get_rect(center = (int(GLOBAL.WIN_WIDTH/2),36)))
     display_gun(plyer, game_display)
@@ -398,12 +402,31 @@ def display_version():
 
 def display_health(health_amt, surface):
     HEALTH_DISPLY_Y = GLOBAL.WIN_HEIGHT - 40
-    HEALTH_DISPLY_XS = [5,25,45,65]
+    HEALTH_DISPLY_XS = [5,25,45,65,95,115,135,155]
     
     IMAGE = gen_func.get_image("Assets","I.png", (24,28))
     
+    health_txt = gen_func.get_font(24).render("HEALTH: ",1,(255,255,255))
+    surface.blit(health_txt, health_txt.get_rect(midleft = (5,HEALTH_DISPLY_Y - 20)))
+    
     for d in range(health_amt):
         surface.blit(IMAGE,(HEALTH_DISPLY_XS[d],HEALTH_DISPLY_Y))
+
+def display_upgrade_bar(upgrade_amt, surface):
+    SIZE = (192, 28)
+    
+    if upgrade_amt == 1:
+        upgrade_img = gen_func.get_image("Assets","Upgrade_bar0.png", SIZE)
+        surface.blit(upgrade_img, upgrade_img.get_rect(center = (int(GLOBAL.WIN_WIDTH/2),GLOBAL.WIN_HEIGHT - 16)))
+    elif upgrade_amt == 2:
+        upgrade_img = gen_func.get_image("Assets","Upgrade_bar1.png", SIZE)
+        surface.blit(upgrade_img, upgrade_img.get_rect(center = (int(GLOBAL.WIN_WIDTH/2),GLOBAL.WIN_HEIGHT - 16)))
+    elif upgrade_amt == 3:
+        upgrade_img = gen_func.get_image("Assets","Upgrade_bar2.png", SIZE)
+        surface.blit(upgrade_img, upgrade_img.get_rect(center = (int(GLOBAL.WIN_WIDTH/2),GLOBAL.WIN_HEIGHT - 16)))
+    elif upgrade_amt == 4:
+        upgrade_img = gen_func.get_image("Assets","Upgrade_bar3.png", SIZE)
+        surface.blit(upgrade_img, upgrade_img.get_rect(center = (int(GLOBAL.WIN_WIDTH/2),GLOBAL.WIN_HEIGHT - 16)))
 
 def draw_debug_screen(is_debug, plyer, surface):
     if is_debug:

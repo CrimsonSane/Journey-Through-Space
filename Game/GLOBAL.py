@@ -6,6 +6,9 @@ VERSION = "0.0.4dev"
 WIN_WIDTH = 1200
 WIN_HEIGHT = 900
 
+# For more predictable gameplay
+SEED = 0
+
 # Declare common resolutions
 # Top is width bottom is height
 RESOLUTIONS = [[720,720,1280,1200,1600,1920,1920,3840],

@@ -2,6 +2,9 @@ import os, pygame, random
 import objects
 import GLOBAL
 
+if GLOBAL != 0:
+    random.seed(GLOBAL.SEED)
+
 # Returns a surface object which is the image
 def get_image(folder, img_nme, scle):
     img = pygame.image.load(os.path.join(folder, img_nme)).convert_alpha()
@@ -156,8 +159,8 @@ def play_music(music):
 # Returns a bool on whether the text file exists
 def get_txt(name):
     try:
-        with open(name + ".txt") as d:
-            d.close()
+        with open(name + ".txt") as f:
+            f.close()
             return True
     except:
         return False
@@ -184,6 +187,6 @@ def create_items():
         
         chance = random.randint(1,chance_amount)
         
-        if chance <= chance_target:
+        if chance == chance_target:
             objects.Item(ITEM_NAMES[ran_item_index], [random.randint(0,GLOBAL.WIN_WIDTH),random.randint(-GLOBAL.WIN_HEIGHT,0)],
                          [0,6], GLOBAL.item_group)

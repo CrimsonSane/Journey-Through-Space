@@ -7,6 +7,9 @@ import math, random, pygame
 import GLOBAL
 import generalized_functions as gen_func
 
+if GLOBAL != 0:
+    random.seed(GLOBAL.SEED)
+
 # SETTINGS CLASS
 class Setting():
     def __init__(self):
@@ -494,7 +497,7 @@ class Player_space_ship(pygame.sprite.Sprite):
         self.WIDTH = GLOBAL.WIN_WIDTH
         self.HEIGHT = GLOBAL.WIN_HEIGHT
         
-        self.MAX_HEALTH = 4
+        self.MAX_HEALTH = [4,5,6,7,8]
         self.health = 3
         self.latest_health = self.health
         self.display_player = True
@@ -508,7 +511,7 @@ class Player_space_ship(pygame.sprite.Sprite):
         self.image = self.orignial_img
         self.rect = self.image.get_rect(center = (self.pos[0],self.pos[1]))
         
-        self.shield_time = 5000
+        self.shield_time = [5000, 6000, 7000, 8000, 10_000]
         self.shield_start_time = -1
         self.shield_bool = False
         self.display_shield = False
@@ -531,10 +534,19 @@ class Player_space_ship(pygame.sprite.Sprite):
         self.fire_index = 0
         
         self.lazer_type = "PLAYER_NORM_LAZER"
-        self.LAZER_COOLDOWNS = [8, 4, 20, 9, 10, 5]
+        self.LAZER_COOLDOWNS = [8, 4, 20, 9, 10, 7]
+        self.LAZER_REDUCTION = [[0,2,2,3,3],
+                                [0,1,1,2,2],
+                                [0,4,4,5,5],
+                                [0,2,2,3,3],
+                                [0,3,3,4,4],
+                                [0,1,1,2,2]]
         self.lazer_cooldown = self.LAZER_COOLDOWNS[0]
         self.shoot_start_time = -1
         self.lazer_timer = Timer()
+        
+        self.upgrade = 0
+        self.MAX_UPGRADE = 4
     
     def update(self, key_butns):
         # Move the ship as long as it has velocity
@@ -585,7 +597,7 @@ class Player_space_ship(pygame.sprite.Sprite):
             self.latest_health = self.health
         # Activate shield
         elif self.shield_bool:
-            self.shield(self.shield_time)
+            self.shield(self.shield_time[self.upgrade])
         # Health reaches zero
         elif self.health <= 0 and self.display_player == True:
             Explosion([0,0], GLOBAL.explosion_group, [3,3, 5,5], self.pos)
@@ -681,29 +693,85 @@ class Player_space_ship(pygame.sprite.Sprite):
         if self.lazer_type == "PLAYER_NORM_LAZER":
             
             if self.lazer_cooldown <= 0:
-                Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-6, angle=self.angle,
+                if self.upgrade > 3:
+                    Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-5, angle=self.angle,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
+                    Lazer(pos=[self.pos[0], self.pos[1]-1], spd=-6, angle=self.angle,
                       group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
-                Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-6, angle=self.angle,
+                    Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-5, angle=self.angle,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
+                
+                if self.upgrade >= 2:
+                    Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-5, angle=self.angle,
                       group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
-                self.lazer_cooldown = self.LAZER_COOLDOWNS[0]
+                    Lazer(pos=[self.pos[0], self.pos[1]-1], spd=-6, angle=self.angle,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
+                    Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-5, angle=self.angle,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
+                    
+                else:
+                    Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-6, angle=self.angle,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
+                    Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-6, angle=self.angle,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
+                
+                self.lazer_cooldown = self.LAZER_COOLDOWNS[0] - self.LAZER_REDUCTION[0][self.upgrade]
                 gen_func.play_sound(GLOBAL.lazer_shooting, GLOBAL.LAZER_CHANNEL)
         # Rapid fire player lazer
         elif self.lazer_type == "PLAYER_RAPID_LAZER":
             
             if self.lazer_cooldown <= 0:
-                Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-7, angle=self.angle,
+                if self.upgrade > 3:
+                    Lazer(pos=[self.pos[0]-7, self.pos[1]-2], spd=-10, angle=self.angle,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
+                    Lazer(pos=[self.pos[0]+7, self.pos[1]-2], spd=-9, angle=self.angle,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
+                    
+                    Lazer(pos=[self.pos[0]-9, self.pos[1]-2], spd=-9, angle=self.angle,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
+                    Lazer(pos=[self.pos[0]+9, self.pos[1]-2], spd=-10, angle=self.angle,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
+                    
+                if self.upgrade >= 2:
+                    Lazer(pos=[self.pos[0]-7, self.pos[1]-2], spd=-8, angle=self.angle,
                       group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
-                Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-7, angle=self.angle,
+                    Lazer(pos=[self.pos[0]+7, self.pos[1]-2], spd=-7, angle=self.angle,
                       group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
-                self.lazer_cooldown = self.LAZER_COOLDOWNS[1]
+                    
+                    Lazer(pos=[self.pos[0]-9, self.pos[1]-2], spd=-7, angle=self.angle,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
+                    Lazer(pos=[self.pos[0]+9, self.pos[1]-2], spd=-8, angle=self.angle,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
+                    
+                else:
+                    Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-7, angle=self.angle,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
+                    Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-7, angle=self.angle,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
+                
+                self.lazer_cooldown = self.LAZER_COOLDOWNS[1] - self.LAZER_REDUCTION[1][self.upgrade]
                 gen_func.play_sound(GLOBAL.lazer_shooting, GLOBAL.LAZER_CHANNEL)
         # player lazer cannon
         elif self.lazer_type == "PLAYER_CANNON_LAZER":
             
             if self.lazer_cooldown <= 0:
-                Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-7, angle=self.angle,
+                if self.upgrade > 3:
+                    Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-7, angle=self.angle,
                       group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
-                self.lazer_cooldown = self.LAZER_COOLDOWNS[2]
+                    Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-7, angle=self.angle,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
+                
+                elif self.upgrade >= 2:
+                    Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-6, angle=self.angle,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
+                    Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-6, angle=self.angle,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
+                
+                else:
+                    Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-6, angle=self.angle,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
+                
+                self.lazer_cooldown = self.LAZER_COOLDOWNS[2] - self.LAZER_REDUCTION[2][self.upgrade]
                 gen_func.play_sound(GLOBAL.lazer_cannon_shooting, GLOBAL.LAZER_CHANNEL)
         # Split fire player lazer
         elif self.lazer_type == "PLAYER_SPLIT_LAZER":
@@ -713,7 +781,7 @@ class Player_space_ship(pygame.sprite.Sprite):
                       group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
                 Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-7, angle=self.angle,
                       group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
-                self.lazer_cooldown = self.LAZER_COOLDOWNS[3]
+                self.lazer_cooldown = self.LAZER_COOLDOWNS[3] - self.LAZER_REDUCTION[3][self.upgrade]
                 gen_func.play_sound(GLOBAL.lazer_shooting, GLOBAL.LAZER_CHANNEL)
         # Pierce fire player lazer
         elif self.lazer_type == "PLAYER_PIERCE_LAZER":
@@ -723,7 +791,7 @@ class Player_space_ship(pygame.sprite.Sprite):
                       group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
                 Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-11, angle=self.angle,
                       group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
-                self.lazer_cooldown = self.LAZER_COOLDOWNS[4]
+                self.lazer_cooldown = self.LAZER_COOLDOWNS[4] - self.LAZER_REDUCTION[4][self.upgrade]
                 gen_func.play_sound(GLOBAL.lazer_shooting, GLOBAL.LAZER_CHANNEL)
         # Spread fire player lazer
         elif self.lazer_type == "PLAYER_SPREAD_LAZER":
@@ -732,16 +800,43 @@ class Player_space_ship(pygame.sprite.Sprite):
                 OFFSET_ANGLE0 = 30
                 OFFSET_ANGLE1 = 15
                 
-                Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-6, angle=self.angle + OFFSET_ANGLE0,
+                UPGRADED_OFFSET_ANGLE0 = 45
+                UPGRADED_OFFSET_ANGLE1 = 20
+                
+                if self.upgrade > 3:
+                    Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-6, angle=self.angle + OFFSET_ANGLE0,
+                      group=GLOBAL.lazer_group, lazer_type="PLAYER_SPLIT_LAZER", destry_scrap=True)
+                    Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-6, angle=self.angle + OFFSET_ANGLE1,
+                      group=GLOBAL.lazer_group, lazer_type="PLAYER_SPLIT_LAZER", destry_scrap=True)
+                
+                    Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-6, angle=self.angle - OFFSET_ANGLE1,
+                      group=GLOBAL.lazer_group, lazer_type="PLAYER_SPLIT_LAZER", destry_scrap=True)
+                    Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-6, angle=self.angle - OFFSET_ANGLE0,
+                      group=GLOBAL.lazer_group, lazer_type="PLAYER_SPLIT_LAZER", destry_scrap=True)
+                    
+                elif self.upgrade >= 2:
+                    Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-6, angle=self.angle + UPGRADED_OFFSET_ANGLE0,
                       group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
-                Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-6, angle=self.angle + OFFSET_ANGLE1,
+                    Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-6, angle=self.angle + UPGRADED_OFFSET_ANGLE1,
                       group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
                 
-                Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-6, angle=self.angle - OFFSET_ANGLE1,
+                    Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-6, angle=self.angle - UPGRADED_OFFSET_ANGLE1,
                       group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
-                Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-6, angle=self.angle - OFFSET_ANGLE0,
+                    Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-6, angle=self.angle - UPGRADED_OFFSET_ANGLE0,
                       group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
-                self.lazer_cooldown = self.LAZER_COOLDOWNS[5]
+                    
+                else:
+                    Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-6, angle=self.angle + OFFSET_ANGLE0,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
+                    Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-6, angle=self.angle + OFFSET_ANGLE1,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
+                
+                    Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-6, angle=self.angle - OFFSET_ANGLE1,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
+                    Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-6, angle=self.angle - OFFSET_ANGLE0,
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
+                self.lazer_cooldown = self.LAZER_COOLDOWNS[5] - self.LAZER_REDUCTION[5][self.upgrade]
+                
                 gen_func.play_sound(GLOBAL.lazer_shooting, GLOBAL.LAZER_CHANNEL)
     
     def check_collision(self, group):
@@ -1141,6 +1236,8 @@ class Astroid(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = (self.pos[0],self.pos[1]))
         
         self.explosion = 0
+        self.item = "NONE"
+        self.item_chance = (1,2)
     
     def update(self):
         # Move with given speed
@@ -1184,7 +1281,17 @@ class Astroid(pygame.sprite.Sprite):
                 return -1
     
     def regen(self):
+        if self.item != "NONE":
+                
+            chance = random.randint(1,self.item_chance[1])
+            if chance == self.item_chance[0]:
+                Item(self.item, [self.pos[0],self.pos[1] - 5], [0,6], GLOBAL.item_group)
+                self.item = "NONE"
+            else:
+                self.item = "NONE"
+        
         if self.is_astroid:
+            
             # Has to be an astroid to properly regen
             self.pos = [random.randint(0,self.WIDTH),random.randint(-self.HEIGHT,0)] # Randomize position
             self.rect = self.image.get_rect(center = (self.pos[0],self.pos[1]))
@@ -1548,7 +1655,7 @@ class Item(pygame.sprite.Sprite):
             # Hammer increases health to one and gives bonus points if max health is reached
             if self.item_name == "HAMMER":
                 gen_func.play_sound(GLOBAL.item_collect, GLOBAL.PLAYER_CHANNEL)
-                if plyer.health < plyer.MAX_HEALTH:
+                if plyer.health < plyer.MAX_HEALTH[plyer.upgrade]:
                     plyer.health += 1
                     self.kill()
                 else:
@@ -1583,13 +1690,9 @@ class Item(pygame.sprite.Sprite):
         astroid_collision_value = self.check_collision(GLOBAL.astroids_group)
         try:
             if astroid_collision_value != -1:
-                # Trys to split objects if in screen
-                if self.pos[1] < 0:
-                    self.kill()
-                    GLOBAL.astroids_group.sprites()[astroid_collision_value].regen()
-                else:
-                    self.kill()
-                    GLOBAL.astroids_group.sprites()[astroid_collision_value].split()
+                GLOBAL.astroids_group.sprites()[astroid_collision_value].item = self.item_name
+                GLOBAL.astroids_group.sprites()[astroid_collision_value].item_chance = (1,2)
+                self.kill()
         except:
             print("Cannot collide with any more astroids")
     
