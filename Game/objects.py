@@ -1473,8 +1473,13 @@ class Item(pygame.sprite.Sprite):
         
         if self.item_name == "HAMMER":
             self.image = gen_func.get_image("Assets","Hammer.png",ITEM_SIZE)
-            self.desc = "HEALTH"
             self.og_image = self.image
+            self.desc = "HEALTH"
+        
+        elif self.item_name == "SCREW_DRIVER":
+            self.image = gen_func.get_image("Assets","ScrewDriver.png",ITEM_SIZE)
+            self.og_image = self.image
+            self.desc = "UPGRADE"
         
         elif self.item_name == "NORMAL_GUN":
             self.image = gen_func.get_image("Assets","BasicLazerGun.png",GUN_ITEM_SIZE)
@@ -1549,6 +1554,17 @@ class Item(pygame.sprite.Sprite):
                 else:
                     GLOBAL.score += BONUS_SCORE
                     Moving_text(str(BONUS_SCORE), self.pos, [self.spd[0],-self.spd[1]], GLOBAL.mving_txt_group)
+                    
+                    self.kill()
+            # Screw drivers increases upgrade attribute which improve weapons, max health and shield durability
+            if self.item_name == "SCREW_DRIVER":
+                gen_func.play_sound(GLOBAL.item_collect, GLOBAL.PLAYER_CHANNEL)
+                if plyer.upgrade < plyer.MAX_UPGRADE:
+                    plyer.upgrade += 1
+                    self.kill()
+                else:
+                    GLOBAL.score += BONUS_SCORE + 500
+                    Moving_text(str(BONUS_SCORE + 500), self.pos, [self.spd[0],-self.spd[1]], GLOBAL.mving_txt_group)
                     
                     self.kill()
             # Gun changes the player's lazer type to the collected item and give bonus points if you collect the same gun

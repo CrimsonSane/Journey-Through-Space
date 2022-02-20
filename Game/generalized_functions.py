@@ -48,14 +48,20 @@ def create_astroids(amount, group):
                           get_image("Assets","P2-Astroid5.png",(0,0))],
                          [get_image("Assets","P3-Astroid1.png",(0,0)),
                           get_image("Assets","P3-Astroid2.png",(0,0)),
-                          get_image("Assets","P3-Astroid3.png",(0,0))],
+                          get_image("Assets","P3-Astroid3.png",(0,0)),
+                          get_image("Assets","P3-Astroid4.png",(0,0)),
+                          get_image("Assets","P3-Astroid5.png",(0,0))],
                          [get_image("Assets","P4-Astroid1.png",(0,0)),
                           get_image("Assets","P4-Astroid2.png",(0,0)),
-                          get_image("Assets","P4-Astroid3.png",(0,0))],
+                          get_image("Assets","P4-Astroid3.png",(0,0)),
+                          get_image("Assets","P4-Astroid4.png",(0,0)),
+                          get_image("Assets","P4-Astroid5.png",(0,0))],
                          [get_image("Assets","P5-Astroid1.png",(0,0)),
                           get_image("Assets","P5-Astroid2.png",(0,0)),
                           get_image("Assets","P5-Astroid3.png",(0,0)),
-                          get_image("Assets","P5-Astroid4.png",(0,0))],
+                          get_image("Assets","P5-Astroid4.png",(0,0)),
+                          get_image("Assets","P5-Astroid5.png",(0,0)),
+                          get_image("Assets","P5-Astroid6.png",(0,0))],
                          [get_image("Assets","P6-Astroid1.png",(0,0)),
                           get_image("Assets","P6-Astroid2.png",(0,0)),
                           get_image("Assets","P6-Astroid3.png",(0,0)),
@@ -165,8 +171,8 @@ def play_random_music():
 
 # Creates items when certain conditions are met
 def create_items():
-    ITEM_NAMES = ["HAMMER", "NORMAL_GUN", "RAPID_GUN", "CANNON_GUN", "SPLIT_GUN", "PIERCE_GUN", "SPREAD_GUN"]
-    ITEM_CHANCES = [(1,10), (1,20), (1,20), (1,20), (1,20), (1,20), (1,20)]
+    ITEM_NAMES = ["HAMMER", "NORMAL_GUN", "RAPID_GUN", "CANNON_GUN", "SPLIT_GUN", "PIERCE_GUN", "SPREAD_GUN", "SCREW_DRIVER"]
+    ITEM_CHANCES = [(1,45), (1,50), (1,25), (1,30), (1,30), (1,30), (1,35), (1,45)]
     ran_item_index = random.randint(0, len(ITEM_NAMES) - 1)
     SPAWN_INTERVAL = 15
     
