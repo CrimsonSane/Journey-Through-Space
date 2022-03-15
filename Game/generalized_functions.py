@@ -2,9 +2,6 @@ import os, pygame, random
 import objects
 import GLOBAL
 
-if GLOBAL != 0:
-    random.seed(GLOBAL.SEED)
-
 # Returns a surface object which is the image
 def get_image(folder, img_nme, scle):
     img = pygame.image.load(os.path.join(folder, img_nme)).convert_alpha()
@@ -29,6 +26,16 @@ def create_stars(amount, group):
         objects.Star([get_image("Assets","Star0.png",(0,0)),
                       get_image("Assets","Star1.png",(0,0))],
                      [0,random.randint(1,2)], group, [0,0, 1,2])
+
+# Creates amount of lines from passed argument
+def create_lines(amount, group):
+    while len(group) < amount:
+        objects.Line([get_image("Assets","Line0.png",(0,0)),
+                      get_image("Assets","Line1.png",(0,0)),
+                      get_image("Assets","Line2.png",(0,0)),
+                      get_image("Assets","Line3.png",(0,0)),
+                      get_image("Assets","Line4.png",(0,0))],
+                     [0,random.randint(2,4)], group, [0,0, 2,4])
 
 # Creates amount of planets from passed argument
 def create_planets(amount, group):
@@ -78,10 +85,13 @@ def create_scrap(amount, group):
                         imgs=[[get_image("Assets","P1-Scrap1.png",(0,0)),
                                get_image("Assets","P1-Scrap2.png",(0,0)),
                                get_image("Assets","P1-Scrap3.png",(0,0)),
-                               get_image("Assets","P1-Scrap4.png",(0,0))],
+                               get_image("Assets","P1-Scrap4.png",(0,0)),
+                               get_image("Assets","P1-Scrap5.png",(0,0))],
                               [get_image("Assets","P2-Scrap1.png",(0,0)),
                                get_image("Assets","P2-Scrap2.png",(0,0)),
-                               get_image("Assets","P2-Scrap3.png",(0,0))]],
+                               get_image("Assets","P2-Scrap3.png",(0,0)),
+                               get_image("Assets","P2-Scrap4.png",(0,0)),
+                               get_image("Assets","P2-Scrap5.png",(0,0))]],
                       group=group, spd_rng=[-2,2, 1,4])
 
 # Adds or removes astroids based off of given amount whether it is negative or positive
@@ -174,8 +184,8 @@ def play_random_music():
 
 # Creates items when certain conditions are met
 def create_items():
-    ITEM_NAMES = ["HAMMER", "NORMAL_GUN", "RAPID_GUN", "CANNON_GUN", "SPLIT_GUN", "PIERCE_GUN", "SPREAD_GUN", "SCREW_DRIVER"]
-    ITEM_CHANCES = [(1,45), (1,50), (1,25), (1,30), (1,30), (1,30), (1,35), (1,45)]
+    ITEM_NAMES = ["HAMMER", "NORMAL_GUN", "RAPID_GUN", "CANNON_GUN", "SPLIT_GUN", "PIERCE_GUN", "SPREAD_GUN", "SCREW_DRIVER", "SPEED_HOOP"]
+    ITEM_CHANCES = [(1,35), (1,50), (1,25), (1,30), (1,30), (1,30), (1,35), (1,35), (1,20)]
     ran_item_index = random.randint(0, len(ITEM_NAMES) - 1)
     SPAWN_INTERVAL = 15
     

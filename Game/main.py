@@ -15,13 +15,8 @@ import generalized_functions as gen_func
 
 FPS = 60
 
-if GLOBAL != 0:
-    random.seed(GLOBAL.SEED)
-
 pygame.font.init()
 pygame.init()
-
-pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN, pygame.KEYUP])
 
 # Setup the settings from Settings.txt
 settings_obj = objects.Setting()
@@ -54,7 +49,7 @@ def main():
     debug = gen_func.get_txt("DEBUG_MODE")
     
     # Create the stars
-    gen_func.create_stars(84, GLOBAL.stars_group)
+    gen_func.create_stars(GLOBAL.STAR_AMT, GLOBAL.stars_group)
     
     # Create planets
     gen_func.create_planets(4, GLOBAL.planet_group)
@@ -64,10 +59,11 @@ def main():
                                        gen_func.get_image("Assets","SpaceShip.png", (0,0)))
     
     # Lists containing objects to update and draw
-    menu_objs_list = [GLOBAL.stars_group, GLOBAL.planet_group]
+    menu_objs_list = [GLOBAL.stars_group, GLOBAL.planet_group, GLOBAL.fast_lines_group]
     
     game_objs_list = [GLOBAL.stars_group, GLOBAL.planet_group, player, GLOBAL.lazer_group, GLOBAL.astroids_group,
-                      GLOBAL.scraps_group, GLOBAL.explosion_group, GLOBAL.item_group, GLOBAL.mving_txt_group]
+                      GLOBAL.scraps_group, GLOBAL.explosion_group, GLOBAL.item_group, GLOBAL.mving_txt_group,
+                      GLOBAL.fast_lines_group]
     
     running = True
     
@@ -247,7 +243,7 @@ def reload_scene(plyer):
 
 def zone_updater():
     ZONE_CHANGE_TIME = 120000
-    cur_time, tar_time = zone_timer.start(GLOBAL.start_game_ticks, ZONE_CHANGE_TIME * GLOBAL.zone_id)
+    cur_time, tar_time = zone_timer.start(GLOBAL.start_game_ticks, (ZONE_CHANGE_TIME * GLOBAL.zone_id) - GLOBAL.speed_skip)
     
     #print(cur_time, tar_time, "Paused Tick:", zone_timer.paused_tick)
     
@@ -265,11 +261,13 @@ def zone_updater():
             gen_func.add_or_remove_scrap(scrap_amt, GLOBAL.scraps_group)
             
             gen_func.create_zone_text()
+            GLOBAL.speed_skip = 0
             #print(GLOBAL.zone_id)
         else:
             # Increase the zone there is no more values to add
             GLOBAL.current_music = gen_func.play_random_music()
             GLOBAL.zone_id += 1
+            GLOBAL.speed_skip = 0
 
 def game_scene(user_inpt, obj_lst, debug):
     plyer = obj_lst[2] # Player is third on the list
@@ -282,6 +280,10 @@ def game_scene(user_inpt, obj_lst, debug):
     
     gen_func.create_items()
     zone_updater()
+    
+    # Add the lines
+    if GLOBAL.scroll_spd >= 5:
+        gen_func.create_lines(GLOBAL.FAST_LINE_AMT, GLOBAL.fast_lines_group)
     
     # display game over if dead
     if plyer.health <= 0:
