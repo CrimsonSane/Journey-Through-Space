@@ -48,15 +48,28 @@ class Player_space_ship(pygame.sprite.Sprite):
                               gen_func.get_image("Assets","thrusterFire-frame7.png", (0,0)),
                               gen_func.get_image("Assets","thrusterFire-frame8.png", (0,0)),
                               gen_func.get_image("Assets","thrusterFire-frame9.png", (0,0))]
+        
+        self.spd_thruster_imgs = [gen_func.get_image("Assets","speed-thrusterFire-frame0.png", (0,0)),
+                              gen_func.get_image("Assets","speed-thrusterFire-frame1.png", (0,0)),
+                              gen_func.get_image("Assets","speed-thrusterFire-frame2.png", (0,0)),
+                              gen_func.get_image("Assets","speed-thrusterFire-frame3.png", (0,0)),
+                              gen_func.get_image("Assets","speed-thrusterFire-frame4.png", (0,0)),
+                              gen_func.get_image("Assets","speed-thrusterFire-frame5.png", (0,0)),
+                              gen_func.get_image("Assets","speed-thrusterFire-frame6.png", (0,0)),
+                              gen_func.get_image("Assets","speed-thrusterFire-frame7.png", (0,0)),
+                              gen_func.get_image("Assets","speed-thrusterFire-frame8.png", (0,0)),
+                              gen_func.get_image("Assets","speed-thrusterFire-frame9.png", (0,0))]
         self.fire_image = self.thruster_imgs[0]
+        self.spd_fire_image = self.spd_thruster_imgs[0]
         self.fire_rect = self.fire_image.get_rect(midtop = (self.pos[0],self.pos[1]+50))
+        self.spd_fire_rect = self.fire_image.get_rect(midtop = (self.pos[0],self.pos[1]+50))
         self.fire_index = 0
         
         self.lazer_type = "PLAYER_NORM_LAZER"
-        self.LAZER_COOLDOWNS = [8, 4, 20, 9, 10, 7]
+        self.LAZER_COOLDOWNS = [8, 5, 20, 9, 10, 7]
         self.LAZER_REDUCTION = [[0,2,2,3,3],
                                 [0,1,1,2,2],
-                                [0,4,4,5,5],
+                                [0,5,5,6,6],
                                 [0,2,2,3,3],
                                 [0,3,3,4,4],
                                 [0,1,1,2,2]]
@@ -79,13 +92,15 @@ class Player_space_ship(pygame.sprite.Sprite):
             self.image = pygame.transform.rotate(self.orignial_img, self.angle)
             self.rect = self.image.get_rect(center = (self.pos[0],self.pos[1]))
             self.shield_rect = self.bubble_img.get_rect(center = (self.pos[0],self.pos[1]))
-        
+            
             # Loop through the thruster images
             if self.fire_index < len(self.thruster_imgs) - 1:
                 self.fire_index += 1
             else:
                 self.fire_index = 0
             self.fire_image = pygame.transform.rotate(self.thruster_imgs[self.fire_index], self.angle)
+            self.spd_fire_image = pygame.transform.rotate(self.spd_thruster_imgs[self.fire_index], self.angle)
+            self.spd_fire_rect = self.spd_fire_image.get_rect(midtop = (15*math.sin(math.radians(self.angle)) + self.pos[0], self.pos[1] + 5 + math.cos(math.radians(self.angle))))
             self.fire_rect = self.fire_image.get_rect(midtop = (15*math.sin(math.radians(self.angle)) + self.pos[0], self.pos[1] + 5 + math.cos(math.radians(self.angle))))
             
             # if player isn't dead
@@ -196,7 +211,7 @@ class Player_space_ship(pygame.sprite.Sprite):
                 self.shoot_start_time = -1
     
     def set_speed_hop(self, time):
-        SPEED_AMT = 7
+        SPEED_AMT = 5
         
         self.speed_hoop_strt_time = -1
         self.shield_start_time = -1
@@ -204,9 +219,9 @@ class Player_space_ship(pygame.sprite.Sprite):
         self.speed_hop = True
         self.shield_bool = True
         if GLOBAL.zone_id < len(GLOBAL.ZONE_VALUES[0]) - 1:
-            GLOBAL.scroll_spd = GLOBAL.ZONE_VALUES[0][GLOBAL.zone_id] * SPEED_AMT
+            GLOBAL.scroll_spd = GLOBAL.ZONE_VALUES[0][GLOBAL.zone_id] + SPEED_AMT
         else:
-            GLOBAL.scroll_spd = GLOBAL.ZONE_VALUES[0][len(GLOBAL.ZONE_VALUES[0]) - 1] * SPEED_AMT
+            GLOBAL.scroll_spd = GLOBAL.ZONE_VALUES[0][len(GLOBAL.ZONE_VALUES[0]) - 1] + SPEED_AMT
         GLOBAL.speed_skip += time
     
     def do_speed_hop(self):
@@ -251,11 +266,11 @@ class Player_space_ship(pygame.sprite.Sprite):
             if self.lazer_cooldown <= 0:
                 if self.upgrade > 3:
                     Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-5, angle=self.angle,
-                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
                     Lazer(pos=[self.pos[0], self.pos[1]-1], spd=-6, angle=self.angle,
                       group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
                     Lazer(pos=[self.pos[0]+8, self.pos[1]-2], spd=-5, angle=self.angle,
-                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
                 
                 if self.upgrade >= 2:
                     Lazer(pos=[self.pos[0]-8, self.pos[1]-2], spd=-5, angle=self.angle,
@@ -279,14 +294,14 @@ class Player_space_ship(pygame.sprite.Sprite):
             if self.lazer_cooldown <= 0:
                 if self.upgrade > 3:
                     Lazer(pos=[self.pos[0]-7, self.pos[1]-2], spd=-10, angle=self.angle,
-                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
                     Lazer(pos=[self.pos[0]+7, self.pos[1]-2], spd=-9, angle=self.angle,
-                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
                     
                     Lazer(pos=[self.pos[0]-9, self.pos[1]-2], spd=-9, angle=self.angle,
-                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
                     Lazer(pos=[self.pos[0]+9, self.pos[1]-2], spd=-10, angle=self.angle,
-                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type, destry_scrap=True)
+                      group=GLOBAL.lazer_group, lazer_type=self.lazer_type)
                     
                 if self.upgrade >= 2:
                     Lazer(pos=[self.pos[0]-7, self.pos[1]-2], spd=-8, angle=self.angle,
@@ -411,7 +426,12 @@ class Player_space_ship(pygame.sprite.Sprite):
     
     def draw(self, disply):
         if self.display_player:
-            disply.blit(self.fire_image, self.fire_rect)
+            # Display normal thruster flame when bellow a certain speed
+            if GLOBAL.scroll_spd < 5:
+                disply.blit(self.fire_image, self.fire_rect)
+            else:
+                disply.blit(self.spd_fire_image, self.spd_fire_rect)
+            
             disply.blit(self.image, self.rect)
         if self.display_shield:
             disply.blit(self.bubble_img, self.shield_rect)

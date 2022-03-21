@@ -105,7 +105,7 @@ def add_or_remove_astroids(amount, group):
             elif amount == 0:
                 if astroid.pos[1] < 0:
                     astroid.kill()
-                    print("Astroid killed")
+                    #print("Astroid killed")
         
         create_astroids(amount, group)
     except:
@@ -122,7 +122,7 @@ def add_or_remove_scrap(amount, group):
             elif amount == 0:
                 if scrap.pos[1] < 0:
                     scrap.kill()
-                    print("Scrap killed")
+                    #print("Scrap killed")
         
         create_scrap(amount, group)
     except:

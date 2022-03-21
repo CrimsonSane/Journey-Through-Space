@@ -109,9 +109,14 @@ class Lazer(pygame.sprite.Sprite):
                         gen_func.play_sound(GLOBAL.lazer_hit, GLOBAL.LAZER_HIT_CHANNEL)
                         self.kill()
             else:
+                REDUCTION = 20
+                
                 scrap_spd = GLOBAL.scraps_group.sprites()[scrap_collision_value].spd
-                gen_func.play_sound(GLOBAL.lazer_hit, GLOBAL.LAZER_HIT_CHANNEL)
+                #gen_func.play_sound(GLOBAL.lazer_hit, GLOBAL.LAZER_HIT_CHANNEL)
                 Explosion(scrap_spd, GLOBAL.explosion_group, [0.1,0.1, 0.1,0.1], self.pos)
+                
+                GLOBAL.scraps_group.sprites()[scrap_collision_value].spd = [scrap_spd[0] + (self.spd * (self.angle/30) / REDUCTION),
+                                                                            scrap_spd[1] + (self.spd / REDUCTION)]
                 self.kill()
         
         # Collision

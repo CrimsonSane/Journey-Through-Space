@@ -43,9 +43,9 @@ speed_skip = 0
 # First list is scroll speed
 # Second list is astroid amount
 # Third list is scrap amount
-ZONE_VALUES = [[1,2,2,3,3,4,4],
-               [0,5,3,5,6,8,12],
-               [0,0,5,5,10,12,12]]
+ZONE_VALUES = [[1,2,2,3,3,4,4,5,5],
+               [0,5,3,5,6,8,12,5,0],
+               [0,0,5,5,10,12,15,20]]
 ASTROID_SCORE_AMTS = [0,5,10,15,25,50,100]
 SCRAP_SCORE_AMTS = [0,10,20,30,50,100,200]
 SPEED_SKIP_TIME = 10_000
