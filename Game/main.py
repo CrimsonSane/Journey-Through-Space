@@ -238,8 +238,19 @@ def reload_scene(plyer):
     GLOBAL.score = 0
     gen_func.create_zone_text()
     
-    GLOBAL.current_music = gen_func.play_music(GLOBAL.MUSIC_TRACKS[1])
+    #GLOBAL.current_music = gen_func.play_music(GLOBAL.MUSIC_TRACKS[1])
+    set_music()
     GLOBAL.scene_strng = "GAME_SCENE"
+
+def set_music():
+    # Set playlist if empty
+    if len(GLOBAL.current_playlist) == 0 or GLOBAL.track_num >= len(GLOBAL.current_playlist) - 1:
+        GLOBAL.current_playlist = gen_func.get_song_playlist(GLOBAL.ZONE_TRACKS)
+        GLOBAL.track_num = 0
+    else:
+        GLOBAL.track_num += 1
+        #print(GLOBAL.track_num)
+    GLOBAL.current_music = gen_func.play_music(GLOBAL.current_playlist[GLOBAL.track_num])
 
 def zone_updater():
     ZONE_CHANGE_TIME = 120000

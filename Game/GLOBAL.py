@@ -63,9 +63,17 @@ MUSIC_TRACKS = [os.path.join("Assets", "Gaze Upon the Stars.wav"),
                 os.path.join("Assets", "Cosmic Glory.wav"),
                 os.path.join("Assets", "Dead Space.wav"),
                 os.path.join("Assets", "Travel The Galaxy.wav")]
+# Songs that will play in each zone
+ZONE_TRACKS = [MUSIC_TRACKS[1],
+               MUSIC_TRACKS[2],
+               MUSIC_TRACKS[3],
+               MUSIC_TRACKS[4]]
 
 # Initalize current music as the title song
 current_music = MUSIC_TRACKS[0]
+
+track_num = 0
+current_playlist = []
 
 lazer_shooting = pygame.mixer.Sound(os.path.join("Assets", "lazer.wav"))
 lazer_cannon_shooting = pygame.mixer.Sound(os.path.join("Assets", "Cannon.ogg"))

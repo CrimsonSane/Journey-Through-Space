@@ -158,6 +158,18 @@ def get_index_frm_2d_list(lst, elems):
 def play_sound(sound, mixer):
     pygame.mixer.Channel(mixer).play(sound)
 
+# Returns a list of randomized songs to play that don't repeat and always has the first song play
+def get_song_playlist(song_list):
+    new_playlist = []
+    new_playlist.append(song_list[0])
+    
+    while len(new_playlist) != len(song_list):
+        random_song = song_list[random.randint(1,len(song_list) - 1)]
+        if random_song not in new_playlist:
+            new_playlist.append(random_song)
+    
+    return new_playlist
+
 # Plays music and returns currently playing song
 def play_music(music):
     if not pygame.mixer.music.get_busy() or GLOBAL.current_music != music:
