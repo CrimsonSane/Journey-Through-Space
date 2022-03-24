@@ -13,7 +13,8 @@ class Planet(pygame.sprite.Sprite):
         self.WIDTH = GLOBAL.WIN_WIDTH
         self.HEIGHT = GLOBAL.WIN_HEIGHT
         
-        self.spd = [spd[0],spd[1]]
+        self.ref_spd = [spd[0],spd[1]]
+        self.spd = [GLOBAL.scroll_spd * self.ref_spd[0],GLOBAL.scroll_spd * self.ref_spd[1]]
         self.spd_rng = spd_rng
         self.angle = random.randint(-360, 360)
         self.size = random.randint(25, 100)
@@ -35,6 +36,7 @@ class Planet(pygame.sprite.Sprite):
     def update(self):
         # Move with given speed
         if not GLOBAL.paused:
+            self.spd = [GLOBAL.scroll_spd * self.ref_spd[0],GLOBAL.scroll_spd * self.ref_spd[1]]
             self.pos = [self.pos[0]+self.spd[0], self.pos[1]+self.spd[1]]
         
             self.angle += self.angle_spd
@@ -52,7 +54,7 @@ class Planet(pygame.sprite.Sprite):
         self.pos = [random.randint(0,self.WIDTH),random.randint(-self.HEIGHT,0)] # Randomize position
         
         self.angle = random.randint(-360, 360)
-        self.size = random.randint(25, 100)
+        self.size = random.randint(25, 150)
         
         self.angle_spd = random.randint(-1,1)
         self.angle_spd /= random.randint(5,25)
@@ -61,8 +63,10 @@ class Planet(pygame.sprite.Sprite):
         self.orignial_img = self.image
         self.image = pygame.transform.rotate(self.orignial_img, self.angle)
         
-        self.spd[0] = random.randint(self.spd_rng[0],self.spd_rng[1])
-        self.spd[1] = random.randint(self.spd_rng[2],self.spd_rng[3])
+        self.ref_spd[0] = random.randint(self.spd_rng[0],self.spd_rng[1])
+        self.ref_spd[1] = random.randint(self.spd_rng[2],self.spd_rng[3])
+        
+        self.spd = [GLOBAL.scroll_spd * self.ref_spd[0],GLOBAL.scroll_spd * self.ref_spd[1]]
     
     def draw(self, disply):
         # Only display if on screen

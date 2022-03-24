@@ -13,7 +13,8 @@ class Star(pygame.sprite.Sprite):
         self.WIDTH = GLOBAL.WIN_WIDTH
         self.HEIGHT = GLOBAL.WIN_HEIGHT
         
-        self.spd = [GLOBAL.scroll_spd * spd[0],GLOBAL.scroll_spd * spd[1]]
+        self.ref_spd = [spd[0],spd[1]]
+        self.spd = [GLOBAL.scroll_spd * self.ref_spd[0],GLOBAL.scroll_spd * self.ref_spd[1]]
         self.spd_rng = spd_rng
         self.angle = random.randint(-360, 360)
         self.pos = [random.randint(0,self.WIDTH),random.randint(0,self.HEIGHT)] # Randomize position
@@ -26,6 +27,7 @@ class Star(pygame.sprite.Sprite):
     def update(self):
         # Move with given speed
         if not GLOBAL.paused:
+            self.spd = [GLOBAL.scroll_spd * self.ref_spd[0],GLOBAL.scroll_spd * self.ref_spd[1]]
             self.pos = [self.pos[0]+self.spd[0], self.pos[1]+self.spd[1]]
         
         # If object moves out of screen
@@ -40,8 +42,10 @@ class Star(pygame.sprite.Sprite):
         self.orignial_img = self.image
         self.image = pygame.transform.rotate(self.orignial_img, self.angle)
         
-        self.spd[0] = GLOBAL.scroll_spd * random.randint(self.spd_rng[0],self.spd_rng[1])
-        self.spd[1] = GLOBAL.scroll_spd * random.randint(self.spd_rng[2],self.spd_rng[3])
+        self.ref_spd[0] = random.randint(self.spd_rng[0],self.spd_rng[1])
+        self.ref_spd[1] = random.randint(self.spd_rng[2],self.spd_rng[3])
+        
+        self.spd = [GLOBAL.scroll_spd * self.ref_spd[0],GLOBAL.scroll_spd * self.ref_spd[1]]
     
     def draw(self, disply):
         # Only display if on screen
