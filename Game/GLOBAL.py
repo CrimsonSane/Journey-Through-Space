@@ -62,12 +62,16 @@ MUSIC_TRACKS = [os.path.join("Assets", "Gaze Upon the Stars.wav"),
                 os.path.join("Assets", "Nebulus.wav"),
                 os.path.join("Assets", "Cosmic Glory.wav"),
                 os.path.join("Assets", "Dead Space.wav"),
-                os.path.join("Assets", "Travel The Galaxy.wav")]
+                os.path.join("Assets", "Travel The Galaxy.wav"),
+                os.path.join("Assets", "Scrap Central.wav"),
+                os.path.join("Assets", "No Hope Out Here.wav")]
 # Songs that will play in each zone
 ZONE_TRACKS = [MUSIC_TRACKS[1],
                MUSIC_TRACKS[2],
                MUSIC_TRACKS[3],
-               MUSIC_TRACKS[4]]
+               MUSIC_TRACKS[4],
+               MUSIC_TRACKS[5],
+               MUSIC_TRACKS[6]]
 
 # Initalize current music as the title song
 current_music = MUSIC_TRACKS[0]

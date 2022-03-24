@@ -239,6 +239,7 @@ def reload_scene(plyer):
     gen_func.create_zone_text()
     
     #GLOBAL.current_music = gen_func.play_music(GLOBAL.MUSIC_TRACKS[1])
+    GLOBAL.current_playlist.clear()
     set_music()
     GLOBAL.scene_strng = "GAME_SCENE"
 
@@ -261,7 +262,8 @@ def zone_updater():
     if cur_time >= tar_time:
         # Determines if the zone will do additional actions
         if GLOBAL.zone_id < len(GLOBAL.ZONE_VALUES[0]) - 1:
-            GLOBAL.current_music = gen_func.play_random_music()
+            #GLOBAL.current_music = gen_func.play_random_music()
+            set_music()
             GLOBAL.zone_id += 1
             
             GLOBAL.scroll_spd = GLOBAL.ZONE_VALUES[0][GLOBAL.zone_id]
@@ -276,7 +278,8 @@ def zone_updater():
             #print(GLOBAL.zone_id)
         else:
             # Increase the zone there is no more values to add
-            GLOBAL.current_music = gen_func.play_random_music()
+            #GLOBAL.current_music = gen_func.play_random_music()
+            set_music()
             GLOBAL.zone_id += 1
             GLOBAL.speed_skip = 0
 
