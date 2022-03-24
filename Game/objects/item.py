@@ -2,6 +2,7 @@ import GLOBAL
 import generalized_functions as gen_func
 from objects.timer import Timer
 from objects.moving_text import Moving_text
+from objects.explosion import Explosion
 
 import pygame
 
@@ -149,6 +150,7 @@ class Item(pygame.sprite.Sprite):
         if astroid_collision_value != -1:
             GLOBAL.astroids_group.sprites()[astroid_collision_value].item = self.item_name
             GLOBAL.astroids_group.sprites()[astroid_collision_value].item_chance = (1,2)
+            Explosion(self.spd, GLOBAL.explosion_group, [1,1, 1,1], self.pos)
             self.kill()
     
     def check_collision(self, group):
