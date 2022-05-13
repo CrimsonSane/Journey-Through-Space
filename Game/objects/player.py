@@ -136,13 +136,13 @@ class Player_space_ship(pygame.sprite.Sprite):
         
         # When a change in health happens
         if self.latest_health != self.health and self.health > 0:
-            self.shield_bool = True
             self.latest_health = self.health
+            self.shield_bool = True
         # Activate shield
-        elif self.shield_bool:
+        if self.shield_bool:
             self.shield(self.shield_time[self.upgrade])
         # Health reaches zero
-        elif self.health <= 0 and self.display_player == True:
+        if self.health <= 0 and self.display_player == True:
             Explosion([0,0], GLOBAL.explosion_group, [3,3, 5,5], self.pos)
             self.display_player = False
         # Reset player position after death
