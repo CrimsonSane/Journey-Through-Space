@@ -40,7 +40,7 @@ class Lazer(pygame.sprite.Sprite):
         
         self.explosion = 0
     
-    def update(self):
+    def update(self, key_butns):
         # Move with given speed
         if not GLOBAL.paused:
             self.pos = [self.pos[0] + self.spd * (self.angle/30), self.pos[1] + self.spd]
@@ -114,6 +114,7 @@ class Lazer(pygame.sprite.Sprite):
                 scrap_spd = GLOBAL.scraps_group.sprites()[scrap_collision_value].spd
                 #gen_func.play_sound(GLOBAL.lazer_hit, GLOBAL.LAZER_HIT_CHANNEL)
                 Explosion(scrap_spd, GLOBAL.explosion_group, [0.1,0.1, 0.1,0.1], self.pos)
+                GLOBAL.scraps_group.sprites()[scrap_collision_value].health -= 1
                 
                 GLOBAL.scraps_group.sprites()[scrap_collision_value].spd = [scrap_spd[0] + (self.spd * (self.angle/30) / REDUCTION),
                                                                             scrap_spd[1] + (self.spd / REDUCTION)]

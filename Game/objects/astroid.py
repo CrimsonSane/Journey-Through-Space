@@ -36,7 +36,7 @@ class Astroid(pygame.sprite.Sprite):
         self.item = "NONE"
         self.item_chance = (1,2)
     
-    def update(self):
+    def update(self, key_butns):
         # Move with given speed
         if not GLOBAL.paused:
             self.pos = [self.pos[0]+self.spd[0], self.pos[1]+self.spd[1]]

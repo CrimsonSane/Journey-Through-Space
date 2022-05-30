@@ -1,0 +1,11 @@
+TODO
+These are ordered from highest priority to lowest priority.
+
+1. Redo the mechanic of shooting strap, it should have hit points instead of being invinsible.
+2. Clean up code again.
+3. Mouse to button intergration.
+4. Instructions on movement and how to play for user.
+5. UI improvement.
+6. New features to guns that don't have upgrades.
+7. New sounds? Maybe?
+9. Reimplement game objects to C for faster run time on slower machines. (It should run 60 FPS on my Windows VM with no problem.)

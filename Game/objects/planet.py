@@ -33,7 +33,7 @@ class Planet(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(self.orignial_img, self.angle)
         self.rect = self.image.get_rect(center = (self.pos[0],self.pos[1]))
     
-    def update(self):
+    def update(self, key_butns):
         # Move with given speed
         if not GLOBAL.paused:
             self.spd = [GLOBAL.scroll_spd * self.ref_spd[0],GLOBAL.scroll_spd * self.ref_spd[1]]

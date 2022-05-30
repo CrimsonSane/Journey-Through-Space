@@ -16,7 +16,7 @@ class Moving_text(pygame.sprite.Sprite):
         self.image = gen_func.get_font(36).render(self.text,1,(255,255,255))
         self.rect = self.image.get_rect(center = (self.pos[0], self.pos[1]))
     
-    def update(self):
+    def update(self, key_butns):
         if not GLOBAL.paused:
             # Move the text
             self.pos[0] += self.spd[0]

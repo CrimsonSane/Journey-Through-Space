@@ -22,6 +22,7 @@ class Scrap(pygame.sprite.Sprite):
         self.pos = pos
         
         self.pts = pts # Scrap points
+        self.health = self.pts
         
         self.images = imgs # Contains lists inside
         
@@ -31,7 +32,7 @@ class Scrap(pygame.sprite.Sprite):
         
         self.explosion = 0
     
-    def update(self):
+    def update(self, key_butns):
         # Move with given speed
         if not GLOBAL.paused:
             self.pos = [self.pos[0]+self.spd[0], self.pos[1]+self.spd[1]]
@@ -39,6 +40,9 @@ class Scrap(pygame.sprite.Sprite):
         
             # Rotate
             self.angle += self.angleSpd
+            
+            if self.health <= 0:
+                self.regen()
         
         # Astroid collision
         astroid_collision_value = self.check_collision(GLOBAL.astroids_group)
@@ -96,6 +100,7 @@ class Scrap(pygame.sprite.Sprite):
         self.pos = [random.randint(0,self.WIDTH),random.randint(-self.HEIGHT,0)] # Randomize position
         self.rect = self.image.get_rect(center = (self.pos[0],self.pos[1]))
         self.pts = random.randint(1,len(self.images))
+        self.health = self.pts
         
         self.angleSpd = random.randint(-1,1)
         self.angle = random.randint(-360, 360)

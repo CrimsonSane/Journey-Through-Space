@@ -50,15 +50,15 @@ class Player_space_ship(pygame.sprite.Sprite):
                               gen_func.get_image("Assets","thrusterFire-frame9.png", (0,0))]
         
         self.spd_thruster_imgs = [gen_func.get_image("Assets","speed-thrusterFire-frame0.png", (0,0)),
-                              gen_func.get_image("Assets","speed-thrusterFire-frame1.png", (0,0)),
-                              gen_func.get_image("Assets","speed-thrusterFire-frame2.png", (0,0)),
-                              gen_func.get_image("Assets","speed-thrusterFire-frame3.png", (0,0)),
-                              gen_func.get_image("Assets","speed-thrusterFire-frame4.png", (0,0)),
-                              gen_func.get_image("Assets","speed-thrusterFire-frame5.png", (0,0)),
-                              gen_func.get_image("Assets","speed-thrusterFire-frame6.png", (0,0)),
-                              gen_func.get_image("Assets","speed-thrusterFire-frame7.png", (0,0)),
-                              gen_func.get_image("Assets","speed-thrusterFire-frame8.png", (0,0)),
-                              gen_func.get_image("Assets","speed-thrusterFire-frame9.png", (0,0))]
+                                  gen_func.get_image("Assets","speed-thrusterFire-frame1.png", (0,0)),
+                                  gen_func.get_image("Assets","speed-thrusterFire-frame2.png", (0,0)),
+                                  gen_func.get_image("Assets","speed-thrusterFire-frame3.png", (0,0)),
+                                  gen_func.get_image("Assets","speed-thrusterFire-frame4.png", (0,0)),
+                                  gen_func.get_image("Assets","speed-thrusterFire-frame5.png", (0,0)),
+                                  gen_func.get_image("Assets","speed-thrusterFire-frame6.png", (0,0)),
+                                  gen_func.get_image("Assets","speed-thrusterFire-frame7.png", (0,0)),
+                                  gen_func.get_image("Assets","speed-thrusterFire-frame8.png", (0,0)),
+                                  gen_func.get_image("Assets","speed-thrusterFire-frame9.png", (0,0))]
         self.fire_image = self.thruster_imgs[0]
         self.spd_fire_image = self.spd_thruster_imgs[0]
         self.fire_rect = self.fire_image.get_rect(midtop = (self.pos[0],self.pos[1]+50))

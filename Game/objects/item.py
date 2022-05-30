@@ -78,7 +78,7 @@ class Item(pygame.sprite.Sprite):
         self.text = gen_func.get_font(20).render(self.desc,1,(255,255,255))
         self.text_rect = self.text.get_rect(center = (self.pos[0], self.pos[1]+32))
     
-    def update(self):
+    def update(self, key_butns):
         # Move the text
         if not GLOBAL.paused:
             self.pos[0] += self.spd[0]
