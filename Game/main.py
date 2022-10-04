@@ -55,8 +55,7 @@ def main():
     gen_func.create_planets(4, GLOBAL.planet_group)
     
     # Create the player ship
-    player = objects.Player_space_ship([int(GLOBAL.WIN_WIDTH/2),GLOBAL.WIN_HEIGHT -100],
-                                       gen_func.get_image("Assets","SpaceShip.png", (0,0)))
+    player = objects.Player_space_ship([int(GLOBAL.WIN_WIDTH/2),GLOBAL.WIN_HEIGHT -100], gen_func.get_image("Assets","SpaceShip.png", (0,0)))
     
     # Dictionary containing the objects to update and draw
     objs_dict = {"STARS": GLOBAL.stars_group, "PLANETS": GLOBAL.planet_group, "PLAYER": player, "LAZERS": GLOBAL.lazer_group,
@@ -70,6 +69,9 @@ def main():
     while running:
         
         GLOBAL.current_tick = pygame.time.get_ticks()
+        
+        pygame.display.update()
+        GLOBAL.clock.tick(FPS)
         
         # Get user input:
         player_keys = get_user_keys(settings_obj)
@@ -182,9 +184,6 @@ def get_scaled_window_display(win_disply):
 def pause_scene(user_inpt, obj_lst, obj_order, debug):
     # SCENE_NAME_scene(player_input, object_list, obj_order, debug)
     
-    pygame.display.update()
-    GLOBAL.clock.tick(FPS)
-    
     if GLOBAL.scene_strng == "PAUSE_SCENE":
         MENUS["pause"].update(user_inpt)
     else:
@@ -223,9 +222,6 @@ def pause_scene(user_inpt, obj_lst, obj_order, debug):
 
 def unknown_scene(user_inpt):
     # SCENE_NAME_scene(player_input, object_list, obj_order, debug)
-    
-    pygame.display.update()
-    GLOBAL.clock.tick(FPS)
     
     MENUS["error"].update(user_inpt)
     
@@ -313,8 +309,6 @@ def zone_updater():
 def game_scene(user_inpt, obj_lst, obj_order, debug):
     # SCENE_NAME_scene(player_input, object_list, obj_order, debug)
     
-    pygame.display.update()
-    GLOBAL.clock.tick(FPS)
     
     # Process user input:
     update_objects(obj_lst, obj_order, user_inpt)
@@ -380,9 +374,6 @@ def display_gun(plyr, display):
 def game_over_scene(user_inpt, obj_lst, obj_order, debug):
     # SCENE_NAME_scene(player_input, object_list, obj_order, debug)
     
-    pygame.display.update()
-    GLOBAL.clock.tick(FPS)
-    
     # Process user input:
     update_objects(obj_lst, obj_order, user_inpt)
     MENUS["death"].update(user_inpt)
@@ -413,9 +404,6 @@ def update_sound_vols():
 def settings_scene(user_inpt, obj_lst, obj_order, debug):
     # SCENE_NAME_scene(player_input, object_list, obj_order, debug)
     
-    pygame.display.update()
-    GLOBAL.clock.tick(FPS)
-    
     # Process user input:
     update_objects(obj_lst, obj_order, user_inpt)
     MENUS["settings"].update(user_inpt)
@@ -432,9 +420,6 @@ def settings_scene(user_inpt, obj_lst, obj_order, debug):
 
 def main_scene(user_inpt, obj_lst, obj_order, debug):
     # SCENE_NAME_scene(player_input, object_list, obj_order, debug)
-    
-    pygame.display.update()
-    GLOBAL.clock.tick(FPS)
     
     # Process user input:
     update_objects(obj_lst, obj_order, user_inpt)

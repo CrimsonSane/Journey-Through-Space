@@ -1,6 +1,6 @@
 import os, pygame
 
-VERSION = "0.0.4"
+VERSION = "0.0.5dev"
 
 # Declare game window width and height
 WIN_WIDTH = 1200
@@ -21,8 +21,9 @@ EXPLOSION_CHANNEL = 3
 SPD_HP_EVENT = pygame.USEREVENT + 1
 SPD_HP_END_EVENT = pygame.USEREVENT + 2
 
+# Define our player
+
 # Declare sprite groups
-player_group = pygame.sprite.Group()
 stars_group = pygame.sprite.Group()
 astroids_group = pygame.sprite.Group()
 scraps_group = pygame.sprite.Group()
@@ -91,3 +92,4 @@ player_hit = pygame.mixer.Sound(os.path.join("Assets", "playerHit.wav"))
 
 # Declare scene values
 scene_strng = "MAIN_SCENE"
+
